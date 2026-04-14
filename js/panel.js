@@ -35,6 +35,7 @@ function closePanel() {
 
 function renderDistrictPanel(districtId, district) {
   const data = store.aggregated[districtId];
+  const rows = store.byDistrict[districtId] || [];
 
   panelEl.innerHTML = `
     <div class="panel-header">
@@ -61,6 +62,7 @@ function renderDistrictPanel(districtId, district) {
         <div class="chart-title">Top subthemes</div>
         <div class="chart-container" id="chart-subthemes"></div>
       </div>
+      ${renderSetGridHTML(rows, district.color)}
     </div>
   `;
 
@@ -125,7 +127,8 @@ function selectIPSub(subId, cardEl) {
   cardEl.style.borderColor = sub.color;
 
   // Render charts in the sub-panel
-  const data   = store.aggregated['ip_' + subId];
+  const data       = store.aggregated['ip_' + subId];
+  const rows       = store.byIPSub[subId] || [];
   const subPanelEl = document.getElementById('ip-sub-panel');
 
   subPanelEl.innerHTML = `
@@ -146,6 +149,7 @@ function selectIPSub(subId, cardEl) {
         <div class="chart-title">Top subthemes</div>
         <div class="chart-container" id="chart-subthemes"></div>
       </div>
+      ${renderSetGridHTML(rows, sub.color)}
     </div>
   `;
 
@@ -154,6 +158,56 @@ function selectIPSub(subId, cardEl) {
 
   clearCharts();
   requestAnimationFrame(() => renderCharts(data, sub.color));
+}
+
+// ── Set card grid ──────────────────────────────────────────────────────────
+
+function renderSetGridHTML(rows, color) {
+  // Pick up to 24 sets that have an image URL, sorted by piece count descending
+  const featured = rows
+    .filter(r => r.imageURL && r.imageURL.trim())
+    .sort((a, b) => (+b.pieces || 0) - (+a.pieces || 0))
+    .slice(0, 24);
+
+  if (!featured.length) return '';
+
+  const cards = featured.map(r => {
+    const pieces = r.pieces ? `${r.pieces} pcs` : null;
+    const price  = r.US_retailPrice ? `$${(+r.US_retailPrice).toFixed(2)}` : null;
+    const year   = r.year || null;
+
+    const meta = [pieces, price, year].filter(Boolean).join(' &middot; ');
+
+    // Escape set name for HTML attribute
+    const safeName = (r.name || '').replace(/"/g, '&quot;');
+
+    return `
+      <div class="set-card" tabindex="0" role="article" aria-label="${safeName}">
+        <div class="set-card-img-wrap">
+          <img
+            class="set-card-img"
+            src="${r.imageURL}"
+            alt="${safeName}"
+            loading="lazy"
+            decoding="async"
+            onerror="this.closest('.set-card-img-wrap').classList.add('img-error')"
+          >
+          <div class="set-card-img-fallback" aria-hidden="true"></div>
+        </div>
+        <div class="set-card-body">
+          <div class="set-card-name">${r.name || 'Unnamed Set'}</div>
+          <div class="set-card-meta" style="color:${color}">${meta}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="chart-section set-grid-section">
+      <div class="chart-title">Featured sets</div>
+      <div class="set-grid">${cards}</div>
+    </div>
+  `;
 }
 
 // ── Stats row HTML ─────────────────────────────────────────────────────────

@@ -240,3 +240,113 @@
   content: '\2190';
   font-size: 14px;
 }
+
+/* ── Set card grid ───────────────────────────────────────────────────────── */
+
+.set-grid-section {
+  border-bottom: none;
+}
+
+.set-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+  padding-bottom: 2px;
+}
+
+/* Scrollbar inside the grid */
+.set-grid::-webkit-scrollbar { width: 4px; }
+.set-grid::-webkit-scrollbar-track { background: transparent; }
+.set-grid::-webkit-scrollbar-thumb {
+  background: var(--sand);
+  border-radius: 2px;
+}
+
+.set-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  cursor: default;
+  transition: transform var(--t-hover), box-shadow var(--t-hover);
+  outline: none;
+}
+
+.set-card:hover,
+.set-card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+/* Image area — fixed 3:2 aspect ratio */
+.set-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  background: #f0f0ec;
+  overflow: hidden;
+}
+
+.set-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* Shown when image fails to load */
+.set-card-img-wrap.img-error .set-card-img {
+  display: none;
+}
+
+.set-card-img-fallback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #e8e8e2 0px,
+      #e8e8e2 6px,
+      #f0f0ec 6px,
+      #f0f0ec 12px
+    );
+}
+
+.set-card-img-wrap.img-error .set-card-img-fallback {
+  display: block;
+}
+
+/* Text below image */
+.set-card-body {
+  padding: 7px 9px 8px;
+}
+
+.set-card-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.set-card-meta {
+  font-size: 10px;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
