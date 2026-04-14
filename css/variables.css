@@ -1,0 +1,66 @@
+:root {
+  /* District identity colors */
+  --color-duplo:    #e63946;
+  --color-city:     #457b9d;
+  --color-creator:  #f4a261;
+  --color-friends:  #e76f51;
+  --color-technic:  #264653;
+  --color-basic:    #52b788;
+  --color-space:    #1d3557;
+  --color-ip:       #7b2d8b;
+
+  /* District accent colors (lighter, for motifs) */
+  --accent-duplo:    #ff6b6b;
+  --accent-city:     #74b3ce;
+  --accent-creator:  #ffb347;
+  --accent-friends:  #ffb3c1;
+  --accent-technic:  #2ec4b6;
+  --accent-basic:    #95d5b2;
+  --accent-space:    #a8dadc;
+  --accent-ip:       #c77dff;
+
+  /* Ocean and island palette */
+  --ocean-dark:   #1a5f9c;
+  --ocean-mid:    #2a7fc1;
+  --ocean-light:  #3a8fd1;
+  --sand:         #d4a855;
+  --sand-dark:    #c9a04a;
+  --grass-light:  #5db85d;
+  --grass-dark:   #4aaa4a;
+
+  /* UI palette */
+  --panel-bg:       #fafaf5;
+  --panel-border:   #d4a855;
+  --text-primary:   #1a1a2e;
+  --text-secondary: #555566;
+  --text-muted:     #888899;
+  --surface:        #ffffff;
+
+  /* Z-index scale */
+  --z-water:     1;
+  --z-island:    2;
+  --z-districts: 4;
+  --z-overlay:   9;
+  --z-panel:     10;
+  --z-loading:   20;
+  --z-tooltip:   30;
+
+  /* Parallax travel distances (max shift at screen edge) */
+  --parallax-island:    3px;
+  --parallax-districts: 10px;
+
+  /* Timing */
+  --t-parallax: 80ms linear;
+  --t-zoom:     600ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-panel:    380ms ease-out;
+  --t-hover:    180ms ease;
+  --t-fade:     300ms ease;
+
+  /* Panel */
+  --panel-width: 440px;
+
+  /* Typography */
+  --font-display: 'Arial Rounded MT Bold', 'Nunito', Arial, sans-serif;
+  --font-body:    'Arial', Helvetica, sans-serif;
+  --font-mono:    'Courier New', monospace;
+}
