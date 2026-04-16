@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +24,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 </head>
+
 <body>
 
   <!-- ── Loading screen ─────────────────────────────────────────────────── -->
@@ -48,8 +50,7 @@
       <div class="island-svg-wrapper">
 
         <!-- Island SVG — viewBox 0 0 1100 720 -->
-      <svg id="island-svg" width="100%" viewBox="0 0 1100 720"
-           role="img" xmlns="http://www.w3.org/2000/svg"
+        <svg id="island-svg" width="100%" viewBox="0 0 1100 720" role="img" xmlns="http://www.w3.org/2000/svg"
           aria-label="LEGO Island map">
 
 
@@ -87,7 +88,7 @@
           C 140 493, 112 498, 92 480
           C 68 460, 65 420, 72 395
           C 78 370, 95 355, 80 340 Z
-        " fill="#d4a855"/>
+        " fill="#d4a855" />
 
           <!-- Grass layer (light) -->
           <path d="
@@ -123,7 +124,7 @@
           C 163 484, 137 489, 119 472
           C 98 453, 96 416, 102 392
           C 108 368, 120 358, 105 335 Z
-        " fill="#5db85d"/>
+        " fill="#5db85d" />
 
           <!-- Grass layer (dark interior) -->
           <path d="
@@ -270,6 +271,21 @@
             <circle cx="0" cy="0" r="10" fill="#c0382b" />
             <circle cx="0" cy="0" r="4" fill="#ffffff" />
           </g>
+          <!-- NEW DETAILS: Licensed Island (Bottom Right) -->
+          <g id="licensed-island">
+            <!-- Sand -->
+            <ellipse cx="1000" cy="640" rx="80" ry="60" fill="#d4a855" />
+            
+            <!-- Bridge to Main Island -->
+            <!-- Bridge Base -->
+            <path d="M 875 515 L 890 500 L 965 580 L 950 595 Z" fill="#A0522D" stroke="#5c3a21" stroke-width="2" stroke-linejoin="round" />
+            <!-- Bridge Planks -->
+            <path d="M 885 520 L 900 505 M 892 529 L 907 514 M 899 538 L 914 523 M 906 547 L 921 532 M 913 556 L 928 541 M 920 565 L 935 550 M 927 574 L 942 559 M 934 583 L 949 568 M 941 592 L 956 577" stroke="#6b3e1b" stroke-width="3" stroke-linecap="round" />
+
+            <!-- Grass -->
+            <ellipse cx="1000" cy="640" rx="65" ry="48" fill="#5db85d" />
+            <ellipse cx="1000" cy="640" rx="55" ry="38" fill="#4aaa4a" />
+          </g>
 
         </svg>
       </div>
@@ -291,15 +307,16 @@
   <!-- ── Shared tooltip for D3 charts ─────────────────────────────────── -->
   <div id="chart-tooltip" role="tooltip" aria-hidden="true"></div>
 
-<!-- ── JavaScript — in dependency order ──────────────────────────────── -->
-<script src="js/districts.js?v=4"></script>
-<script src="js/data.js?v=2"></script>
-<script src="js/water.js?v=2"></script>
-<script src="js/parallax.js?v=2"></script>
-<script src="js/charts.js?v=2"></script>
-<script src="js/panel.js?v=3"></script>
-<script src="js/island.js?v=3"></script>
-<script src="js/main.js?v=2"></script>
+  <!-- ── JavaScript — in dependency order ──────────────────────────────── -->
+  <script src="js/districts.js?v=4"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/water.js?v=2"></script>
+  <script src="js/parallax.js?v=2"></script>
+  <script src="js/charts.js?v=2"></script>
+  <script src="js/panel.js?v=3"></script>
+  <script src="js/island.js?v=3"></script>
+  <script src="js/main.js?v=2"></script>
 
 </body>
+
 </html>
