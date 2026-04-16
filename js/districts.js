@@ -157,7 +157,7 @@ const IP_SUB_DISTRICTS = {
     id: 'marvel',
     label: 'Marvel',
     color: '#c1121f',
-    logo: 'marvelLogo.svg',
+    logo: 'marvelLogo.png',
     matcher: row => ['Marvel Super Heroes', 'Spider-Man'].includes(row.theme),
   },
   chima: {
