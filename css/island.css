@@ -1,0 +1,256 @@
+/* ── District markers (absolutely positioned over the island SVG) ──────── */
+.district-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Circular badge */
+.district-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.35),
+    0 0 0 3px rgba(255,255,255,0.25);
+  transition:
+    transform var(--t-hover),
+    box-shadow var(--t-hover),
+    filter var(--t-hover);
+  border: 2.5px solid rgba(255,255,255,0.4);
+}
+
+.district-marker:hover .district-badge,
+.district-marker:focus-visible .district-badge {
+  transform: scale(1.12) translateY(-3px);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.45),
+    0 0 0 3px rgba(255,255,255,0.5);
+  filter: brightness(1.1);
+}
+
+/* Motif icon inside badge */
+.district-motif {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* District name label beneath badge */
+.district-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  text-shadow:
+    0 1px 4px rgba(0,0,0,0.7),
+    0 0 12px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: transform var(--t-hover);
+}
+
+.district-marker:hover .district-label {
+  transform: translateY(2px);
+}
+
+/* Pulse ring behind badge on idle (subtle attention) */
+.district-badge::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: districtPulse 3.5s ease-out infinite;
+}
+
+@keyframes districtPulse {
+  0%   { opacity: 0.5; transform: scale(1);    }
+  70%  { opacity: 0;   transform: scale(1.4);  }
+  100% { opacity: 0;   transform: scale(1.4);  }
+}
+
+/* Stagger pulse delays per district index so they don't all pulse at once */
+.district-marker:nth-child(1) .district-badge::after { animation-delay: 0s; }
+.district-marker:nth-child(2) .district-badge::after { animation-delay: 0.44s; }
+.district-marker:nth-child(3) .district-badge::after { animation-delay: 0.88s; }
+.district-marker:nth-child(4) .district-badge::after { animation-delay: 1.32s; }
+.district-marker:nth-child(5) .district-badge::after { animation-delay: 1.76s; }
+.district-marker:nth-child(6) .district-badge::after { animation-delay: 2.2s; }
+.district-marker:nth-child(7) .district-badge::after { animation-delay: 2.64s; }
+.district-marker:nth-child(8) .district-badge::after { animation-delay: 3.08s; }
+
+/* Suppress pulse when scene is zoomed */
+.scene.zoomed .district-badge::after {
+  animation: none;
+}
+
+/* ── Motif shapes (CSS-drawn, one per district type) ─────────────────────── */
+
+/* Duplo: three large studs in a triangle */
+.motif-duplo {
+  position: relative;
+}
+.motif-duplo::before,
+.motif-duplo::after,
+.motif-duplo span {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.85);
+}
+.motif-duplo::before { top: 0; left: 0; }
+.motif-duplo::after  { top: 0; right: 0; }
+/* span child drawn via JS */
+
+/* City: two rectangles (buildings) */
+.motif-city::before,
+.motif-city::after {
+  content: '';
+  position: absolute;
+  background: rgba(255,255,255,0.85);
+  border-radius: 2px;
+  bottom: 0;
+}
+.motif-city::before { width: 9px; height: 18px; left: 4px; }
+.motif-city::after  { width: 10px; height: 24px; right: 4px; }
+
+/* Creator: three color blocks */
+.motif-creator::before,
+.motif-creator::after {
+  content: '';
+  position: absolute;
+  border-radius: 3px;
+  bottom: 2px;
+}
+.motif-creator::before { width: 10px; height: 10px; left: 2px;  background: rgba(255,255,255,0.7); }
+.motif-creator::after  { width: 10px; height: 14px; right: 2px; background: rgba(255,255,255,0.9); }
+
+/* Friends: a heart shape using box-shadow trick */
+.motif-friends {
+  position: relative;
+}
+.motif-friends::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 16px;
+  background: rgba(255,255,255,0.85);
+  clip-path: polygon(50% 100%, 0% 35%, 25% 0%, 50% 20%, 75% 0%, 100% 35%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Technic: a gear ring */
+.motif-technic {
+  position: relative;
+}
+.motif-technic::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 5px solid rgba(255,255,255,0.85);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.motif-technic::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Basic: 2x2 stud grid */
+.motif-basic {
+  display: grid;
+  grid-template-columns: repeat(2, 11px);
+  grid-template-rows: repeat(2, 11px);
+  gap: 3px;
+}
+/* Studs drawn via JS as child divs */
+
+/* Space: triangle rocket */
+.motif-space::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 22px solid rgba(255,255,255,0.85);
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.motif-space::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 6px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 2px;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* IP: star shape */
+.motif-ip::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.85);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ── Tooltip hint (shows on hover before click) ──────────────────────────── */
+.district-hint {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10,10,20,0.82);
+  color: #ffffff;
+  font-size: 11px;
+  font-family: var(--font-body);
+  padding: 4px 9px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-hover);
+  letter-spacing: 0.04em;
+}
+
+.district-marker:hover .district-hint {
+  opacity: 1;
+}

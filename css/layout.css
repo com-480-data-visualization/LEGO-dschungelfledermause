@@ -1,0 +1,119 @@
+/* ── Scene: full-viewport stage ─────────────────────────────────────────── */
+.scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ocean-mid);
+}
+
+/* ── Water canvas: sits behind all layers ───────────────────────────────── */
+#water-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-water);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── Parallax layers ────────────────────────────────────────────────────── */
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform var(--t-parallax);
+}
+
+#layer-island {
+  z-index: var(--z-island);
+}
+
+#layer-districts {
+  z-index: var(--z-districts);
+}
+
+/* ── Island SVG wrapper: centered, fills the scene ──────────────────────── */
+.island-svg-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Constrain so island fits both viewport width and height */
+  width: min(100%, calc(100vh * 1100 / 720), 1200px);
+  pointer-events: auto;
+  transform-origin: center center;
+  transition: transform var(--t-zoom);
+}
+
+.island-svg-wrapper svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Loading screen ─────────────────────────────────────────────────────── */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loading);
+  background: var(--ocean-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  transition: opacity var(--t-fade);
+}
+
+#loading-screen p {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: #ffffff;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.loading-ring {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Page title (top-left overlay on the island scene) ──────────────────── */
+#page-title {
+  position: fixed;
+  top: 22px;
+  left: 28px;
+  z-index: var(--z-districts);
+  pointer-events: none;
+}
+
+#page-title h1 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+#page-title p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}

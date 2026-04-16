@@ -1,0 +1,87 @@
+/* ── Water canvas fade-in on load ────────────────────────────────────────── */
+#water-canvas {
+  animation: fadeIn 1.4s ease-out forwards;
+}
+
+/* ── Loading screen fade-out ─────────────────────────────────────────────── */
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── District markers entrance animation ─────────────────────────────────── */
+.district-marker {
+  animation: markerEntrance 0.5s ease-out both;
+}
+
+.district-marker:nth-child(1) { animation-delay: 0.1s; }
+.district-marker:nth-child(2) { animation-delay: 0.18s; }
+.district-marker:nth-child(3) { animation-delay: 0.26s; }
+.district-marker:nth-child(4) { animation-delay: 0.34s; }
+.district-marker:nth-child(5) { animation-delay: 0.42s; }
+.district-marker:nth-child(6) { animation-delay: 0.50s; }
+.district-marker:nth-child(7) { animation-delay: 0.58s; }
+.district-marker:nth-child(8) { animation-delay: 0.66s; }
+
+@keyframes markerEntrance {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 10px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ── General fade-in utility ─────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── IP card entrance when folder opens ──────────────────────────────────── */
+.ip-card {
+  animation: cardEntrance 0.3s ease-out both;
+}
+
+.ip-card:nth-child(1) { animation-delay: 0.02s; }
+.ip-card:nth-child(2) { animation-delay: 0.07s; }
+.ip-card:nth-child(3) { animation-delay: 0.12s; }
+.ip-card:nth-child(4) { animation-delay: 0.17s; }
+.ip-card:nth-child(5) { animation-delay: 0.22s; }
+.ip-card:nth-child(6) { animation-delay: 0.27s; }
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Chart fade-in ───────────────────────────────────────────────────────── */
+.chart-section {
+  animation: fadeIn 0.35s ease-out both;
+}
+
+.chart-section:nth-child(1) { animation-delay: 0.05s; }
+.chart-section:nth-child(2) { animation-delay: 0.12s; }
+.chart-section:nth-child(3) { animation-delay: 0.19s; }
+.chart-section:nth-child(4) { animation-delay: 0.26s; }
+
+/* ── Zoom state: hide markers when zoomed in (they distract from panel) ──── */
+.scene.zoomed #layer-districts {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.scene:not(.zoomed) #layer-districts {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 400ms ease 200ms;
+}
