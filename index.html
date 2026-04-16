@@ -25,36 +25,36 @@
 </head>
 <body>
 
-<!-- ── Loading screen ─────────────────────────────────────────────────── -->
-<div id="loading-screen" role="status" aria-live="polite">
-  <div class="loading-ring"></div>
-  <p>Loading LEGO Island</p>
-</div>
+  <!-- ── Loading screen ─────────────────────────────────────────────────── -->
+  <div id="loading-screen" role="status" aria-live="polite">
+    <div class="loading-ring"></div>
+    <p>Loading LEGO Island</p>
+  </div>
 
-<!-- ── Page title ────────────────────────────────────────────────────── -->
-<div id="page-title" aria-hidden="true">
-  <h1>LEGO Island</h1>
-  <p>A visual journey through 50 years of sets</p>
-</div>
+  <!-- ── Page title ────────────────────────────────────────────────────── -->
+  <div id="page-title" aria-hidden="true">
+    <h1>LEGO Island</h1>
+    <p>A visual journey through 50 years of sets</p>
+  </div>
 
-<!-- ── Main scene ────────────────────────────────────────────────────── -->
-<main class="scene" id="scene" role="main">
+  <!-- ── Main scene ────────────────────────────────────────────────────── -->
+  <main class="scene" id="scene" role="main">
 
-  <!-- Layer 0: Water ripple canvas (z-index 1) -->
-  <canvas id="water-canvas" aria-hidden="true"></canvas>
+    <!-- Layer 0: Water ripple canvas (z-index 1) -->
+    <canvas id="water-canvas" aria-hidden="true"></canvas>
 
-  <!-- Layer 1: Island SVG (z-index 2, parallax ±3px) -->
-  <div class="layer" id="layer-island">
-    <div class="island-svg-wrapper">
+    <!-- Layer 1: Island SVG (z-index 2, parallax ±3px) -->
+    <div class="layer" id="layer-island">
+      <div class="island-svg-wrapper">
 
-      <!-- Island SVG — viewBox 0 0 1100 720 -->
+        <!-- Island SVG — viewBox 0 0 1100 720 -->
       <svg id="island-svg" width="100%" viewBox="0 0 1100 720"
            role="img" xmlns="http://www.w3.org/2000/svg"
-           aria-label="LEGO Island map">
+          aria-label="LEGO Island map">
 
 
-        <!-- Sandy beach outline -->
-        <path d="
+          <!-- Sandy beach outline -->
+          <path d="
           M 80 340
           C 60 290, 70 230, 110 200
           C 130 185, 145 160, 140 130
@@ -89,8 +89,8 @@
           C 78 370, 95 355, 80 340 Z
         " fill="#d4a855"/>
 
-        <!-- Grass layer (light) -->
-        <path d="
+          <!-- Grass layer (light) -->
+          <path d="
           M 105 335
           C 88 290, 98 238, 132 210
           C 150 196, 163 172, 158 144
@@ -125,8 +125,8 @@
           C 108 368, 120 358, 105 335 Z
         " fill="#5db85d"/>
 
-        <!-- Grass layer (dark interior) -->
-        <path d="
+          <!-- Grass layer (dark interior) -->
+          <path d="
           M 135 332
           C 120 295, 128 252, 158 228
           C 175 215, 186 195, 182 170
@@ -159,96 +159,147 @@
           C 180 476, 156 481, 140 465
           C 122 447, 120 413, 126 390
           C 131 368, 148 355, 135 332 Z
-        " fill="#4aaa4a"/>
+        " fill="#4aaa4a" />
 
-        <!-- Tree canopy clusters -->
-        <ellipse cx="162" cy="180" rx="35" ry="28" fill="#3d963d"/>
-        <ellipse cx="175" cy="172" rx="28" ry="22" fill="#5db85d"/>
 
-        <ellipse cx="900" cy="240" rx="30" ry="22" fill="#3d963d"/>
-        <ellipse cx="912" cy="232" rx="24" ry="18" fill="#5db85d"/>
 
-        <ellipse cx="480" cy="130" rx="22" ry="16" fill="#3d963d"/>
-        <ellipse cx="490" cy="124" rx="18" ry="13" fill="#5db85d"/>
+          <!-- NEW DETAILS: Bright Yellow Beach -->
+          <path
+            d="M 240 480 C 300 480, 420 480, 480 480 C 580 480, 680 450, 710 520 C 600 570, 450 560, 318 528 C 288 526, 270 540, 242 538 C 210 535, 192 515, 168 505 Z"
+            fill="#F2CD37" />
 
-        <ellipse cx="320" cy="500" rx="28" ry="20" fill="#3d963d"/>
-        <ellipse cx="332" cy="493" rx="22" ry="16" fill="#5db85d"/>
+          <!-- NEW DETAILS: Road Network -->
+          <g id="island-roads">
+            <!-- Asphalt -->
+            <path stroke="#7A7B7E" stroke-width="24" fill="none" stroke-linejoin="round" d="
+            M 215 372 L 215 215 L 795 215 L 870 215 L 870 352 L 655 352 L 655 438 L 298 438 L 298 372 L 545 372 L 545 215
+            M 478 215 L 478 178
+            M 545 372 L 545 438
+            M 215 372 L 298 372
+          " />
+            <!-- White Dashed Centerlines -->
+            <path stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linejoin="round" stroke-dasharray="14 14" d="
+            M 215 372 L 215 215 L 795 215 L 870 215 L 870 352 L 655 352 L 655 438 L 298 438 L 298 372 L 545 372 L 545 215
+            M 478 215 L 478 178
+            M 545 372 L 545 438
+            M 215 372 L 298 372
+          " />
+          </g>
 
-        <ellipse cx="700" cy="510" rx="26" ry="18" fill="#3d963d"/>
-        <ellipse cx="712" cy="503" rx="20" ry="14" fill="#5db85d"/>
+          <!-- Sandy peninsulas / outcrops -->
+          <path
+            d="M 580 560 Q 620 590 640 610 Q 660 630 650 650 Q 635 665 610 660 Q 585 655 565 630 Q 548 610 558 585 Z"
+            fill="#d4a855" />
+          <path
+            d="M 582 558 Q 622 588 642 608 Q 660 628 650 647 Q 636 660 612 656 Q 588 651 568 628 Q 552 609 562 585 Z"
+            fill="#c9a04a" />
 
-        <!-- Sandy peninsulas / outcrops -->
-        <path d="M 580 560 Q 620 590 640 610 Q 660 630 650 650 Q 635 665 610 660 Q 585 655 565 630 Q 548 610 558 585 Z" fill="#d4a855"/>
-        <path d="M 582 558 Q 622 588 642 608 Q 660 628 650 647 Q 636 660 612 656 Q 588 651 568 628 Q 552 609 562 585 Z" fill="#c9a04a"/>
+          <path
+            d="M 155 430 Q 130 450 118 470 Q 108 488 115 498 Q 125 510 142 505 Q 160 500 170 482 Q 180 462 168 442 Z"
+            fill="#d4a855" />
+          <path
+            d="M 156 431 Q 132 451 120 470 Q 110 487 117 496 Q 127 507 143 503 Q 160 498 170 481 Q 179 462 167 443 Z"
+            fill="#c9a04a" />
 
-        <path d="M 155 430 Q 130 450 118 470 Q 108 488 115 498 Q 125 510 142 505 Q 160 500 170 482 Q 180 462 168 442 Z" fill="#d4a855"/>
-        <path d="M 156 431 Q 132 451 120 470 Q 110 487 117 496 Q 127 507 143 503 Q 160 498 170 481 Q 179 462 167 443 Z" fill="#c9a04a"/>
+          <path
+            d="M 960 310 Q 990 295 1005 280 Q 1018 265 1012 250 Q 1004 238 990 240 Q 975 242 963 258 Q 950 275 955 295 Z"
+            fill="#d4a855" />
+          <!-- Interior grass shade patches -->
+          <path
+            d="M 290 220 Q 320 210 360 220 Q 380 225 390 240 Q 400 255 385 265 Q 365 278 335 272 Q 305 266 290 252 Q 275 238 290 220 Z"
+            fill="#3a8f3a" opacity="0.6" />
+          <path
+            d="M 580 380 Q 620 368 660 380 Q 682 386 692 402 Q 702 418 685 428 Q 662 442 630 436 Q 598 430 580 415 Q 563 400 580 380 Z"
+            fill="#3a8f3a" opacity="0.6" />
+          <path
+            d="M 750 340 Q 785 330 820 340 Q 840 346 848 360 Q 856 374 840 382 Q 820 394 790 388 Q 760 382 745 368 Q 730 354 750 340 Z"
+            fill="#3a8f3a" opacity="0.6" />
+          <path
+            d="M 420 420 Q 452 410 486 420 Q 504 426 511 440 Q 518 453 503 461 Q 484 472 456 466 Q 428 460 413 447 Q 400 434 420 420 Z"
+            fill="#3a8f3a" opacity="0.6" />
 
-        <path d="M 960 310 Q 990 295 1005 280 Q 1018 265 1012 250 Q 1004 238 990 240 Q 975 242 963 258 Q 950 275 955 295 Z" fill="#d4a855"/>
+          <!-- Sandy interior patches -->
+          <path
+            d="M 280 455 Q 310 450 340 455 Q 355 458 360 468 Q 365 478 352 484 Q 334 492 310 488 Q 286 484 273 474 Q 262 464 280 455 Z"
+            fill="#c9a04a" opacity="0.5" />
+          <path
+            d="M 680 180 Q 710 175 740 180 Q 755 183 760 193 Q 765 203 752 209 Q 734 217 710 213 Q 686 209 673 199 Q 662 189 680 180 Z"
+            fill="#c9a04a" opacity="0.5" />
+          <path
+            d="M 810 470 Q 838 465 866 470 Q 880 473 884 482 Q 888 491 876 497 Q 859 504 836 500 Q 813 496 801 487 Q 791 478 810 470 Z"
+            fill="#c9a04a" opacity="0.5" />
 
-        <!-- Trees (trunks + foliage) -->
-        <path d="M 200 160 L 200 130 L 205 130 L 205 148 L 214 142 L 214 148 Z" fill="#8B4513"/>
-        <ellipse cx="200" cy="128" rx="12" ry="9" fill="#2d7a2d"/>
-        <path d="M 480 170 L 480 148 L 484 148 L 484 162 L 491 157 L 491 162 Z" fill="#8B4513"/>
-        <ellipse cx="480" cy="146" rx="10" ry="8" fill="#2d7a2d"/>
-        <path d="M 750 195 L 750 168 L 754 168 L 754 182 L 762 177 L 762 182 Z" fill="#8B4513"/>
-        <ellipse cx="750" cy="166" rx="11" ry="8" fill="#2d7a2d"/>
-        <path d="M 350 485 L 350 460 L 354 460 L 354 474 L 362 469 L 362 474 Z" fill="#8B4513"/>
-        <ellipse cx="350" cy="458" rx="10" ry="8" fill="#2d7a2d"/>
-        <path d="M 680 520 L 680 496 L 684 496 L 684 510 L 692 505 L 692 510 Z" fill="#8B4513"/>
-        <ellipse cx="680" cy="494" rx="10" ry="7" fill="#2d7a2d"/>
-        <path d="M 870 460 L 870 436 L 874 436 L 874 450 L 882 445 L 882 450 Z" fill="#8B4513"/>
-        <ellipse cx="870" cy="434" rx="10" ry="8" fill="#2d7a2d"/>
-        <path d="M 260 360 L 260 336 L 264 336 L 264 350 L 272 345 L 272 350 Z" fill="#8B4513"/>
-        <ellipse cx="260" cy="334" rx="10" ry="8" fill="#2d7a2d"/>
-        <path d="M 620 290 L 620 266 L 624 266 L 624 280 L 632 275 L 632 280 Z" fill="#8B4513"/>
-        <ellipse cx="620" cy="264" rx="10" ry="7" fill="#2d7a2d"/>
+          <!-- Shoreline stroke hints -->
+          <path d="M 115 310 Q 108 295 112 278 Q 118 258 132 248" stroke="#b8922a" stroke-width="2" fill="none"
+            opacity="0.6" />
+          <path d="M 980 370 Q 988 355 985 338 Q 981 318 970 308" stroke="#b8922a" stroke-width="2" fill="none"
+            opacity="0.6" />
+          <path d="M 240 520 Q 228 508 222 492 Q 216 474 220 458" stroke="#b8922a" stroke-width="2" fill="none"
+            opacity="0.6" />
 
-        <!-- Interior grass shade patches -->
-        <path d="M 290 220 Q 320 210 360 220 Q 380 225 390 240 Q 400 255 385 265 Q 365 278 335 272 Q 305 266 290 252 Q 275 238 290 220 Z" fill="#3a8f3a" opacity="0.6"/>
-        <path d="M 580 380 Q 620 368 660 380 Q 682 386 692 402 Q 702 418 685 428 Q 662 442 630 436 Q 598 430 580 415 Q 563 400 580 380 Z" fill="#3a8f3a" opacity="0.6"/>
-        <path d="M 750 340 Q 785 330 820 340 Q 840 346 848 360 Q 856 374 840 382 Q 820 394 790 388 Q 760 382 745 368 Q 730 354 750 340 Z" fill="#3a8f3a" opacity="0.6"/>
-        <path d="M 420 420 Q 452 410 486 420 Q 504 426 511 440 Q 518 453 503 461 Q 484 472 456 466 Q 428 460 413 447 Q 400 434 420 420 Z" fill="#3a8f3a" opacity="0.6"/>
+          <!-- NEW DETAILS: Shark Body -->
+          <g transform="translate(520, 620) rotate(-20) scale(0.8)">
+            <!-- Ripple -->
+            <ellipse cx="40" cy="20" rx="60" ry="20" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.4" />
+            <!-- Main shape -->
+            <path d="M 0 20 C 30 -10, 80 -10, 100 20 C 80 30, 40 40, 0 20 Z" fill="#4B535D" />
+            <!-- Dorsal fin -->
+            <path d="M 35 10 C 45 -15, 60 -25, 70 5 Z" fill="#4B535D" />
+            <!-- Tail fin -->
+            <path d="M 0 20 C -10 0, -25 -5, -20 20 C -25 45, -10 40, 0 20 Z" fill="#4B535D" />
+            <!-- White underbelly outline -->
+            <path d="M 10 22 C 30 35, 70 30, 95 21" stroke="#CDD3D9" stroke-width="3" fill="none"
+              stroke-linecap="round" />
+          </g>
 
-        <!-- Sandy interior patches -->
-        <path d="M 280 455 Q 310 450 340 455 Q 355 458 360 468 Q 365 478 352 484 Q 334 492 310 488 Q 286 484 273 474 Q 262 464 280 455 Z" fill="#c9a04a" opacity="0.5"/>
-        <path d="M 680 180 Q 710 175 740 180 Q 755 183 760 193 Q 765 203 752 209 Q 734 217 710 213 Q 686 209 673 199 Q 662 189 680 180 Z" fill="#c9a04a" opacity="0.5"/>
-        <path d="M 810 470 Q 838 465 866 470 Q 880 473 884 482 Q 888 491 876 497 Q 859 504 836 500 Q 813 496 801 487 Q 791 478 810 470 Z" fill="#c9a04a" opacity="0.5"/>
+          <!-- NEW DETAILS: Compass Rose -->
+          <g transform="translate(100, 620) scale(1.1)">
+            <!-- Outer Rings -->
+            <circle cx="0" cy="0" r="45" fill="none" stroke="#2980b9" stroke-width="4" />
+            <circle cx="0" cy="0" r="38" fill="#f1c40f" stroke="#c0382b" stroke-width="3" />
+            <!-- Points -->
+            <path d="M 0,-38 L 6,0 L -6,0 Z" fill="#c0382b" />
+            <path d="M 0,38 L 6,0 L -6,0 Z" fill="#2c3e50" />
+            <path d="M 38,0 L 0,-6 L 0,6 Z" fill="#2ecc71" />
+            <path d="M -38,0 L 0,-6 L 0,6 Z" fill="#f39c12" />
+            <path d="M 0,-38 L -6,0 L 0,0 Z" fill="#e74c3c" />
+            <path d="M 0,38 L 6,0 L 0,0 Z" fill="#34495e" />
+            <path d="M 38,0 L 0,6 L 0,0 Z" fill="#27ae60" />
+            <path d="M -38,0 L 0,-6 L 0,0 Z" fill="#e67e22" />
+            <!-- Center -->
+            <circle cx="0" cy="0" r="10" fill="#c0382b" />
+            <circle cx="0" cy="0" r="4" fill="#ffffff" />
+          </g>
 
-        <!-- Shoreline stroke hints -->
-        <path d="M 115 310 Q 108 295 112 278 Q 118 258 132 248" stroke="#b8922a" stroke-width="2" fill="none" opacity="0.6"/>
-        <path d="M 980 370 Q 988 355 985 338 Q 981 318 970 308" stroke="#b8922a" stroke-width="2" fill="none" opacity="0.6"/>
-        <path d="M 240 520 Q 228 508 222 492 Q 216 474 220 458" stroke="#b8922a" stroke-width="2" fill="none" opacity="0.6"/>
-
-      </svg>
+        </svg>
+      </div>
     </div>
-  </div>
 
-  <!-- Layer 2: District markers (z-index 4, parallax ±10px) -->
-  <div class="layer" id="layer-districts" aria-label="Island districts" role="region"></div>
+    <!-- Layer 2: District markers (z-index 4, parallax ±10px) -->
+    <div class="layer" id="layer-districts" aria-label="Island districts" role="region"></div>
 
-</main>
+  </main>
 
-<!-- ── Panel overlay backdrop ────────────────────────────────────────── -->
-<div id="panel-overlay" aria-hidden="true"></div>
+  <!-- ── Panel overlay backdrop ────────────────────────────────────────── -->
+  <div id="panel-overlay" aria-hidden="true"></div>
 
-<!-- ── Detail panel ──────────────────────────────────────────────────── -->
-<aside id="detail-panel" aria-label="District details" role="complementary">
-  <!-- Content injected by panel.js -->
-</aside>
+  <!-- ── Detail panel ──────────────────────────────────────────────────── -->
+  <aside id="detail-panel" aria-label="District details" role="complementary">
+    <!-- Content injected by panel.js -->
+  </aside>
 
-<!-- ── Shared tooltip for D3 charts ─────────────────────────────────── -->
-<div id="chart-tooltip" role="tooltip" aria-hidden="true"></div>
+  <!-- ── Shared tooltip for D3 charts ─────────────────────────────────── -->
+  <div id="chart-tooltip" role="tooltip" aria-hidden="true"></div>
 
-<!-- ── JavaScript — in dependency order ──────────────────────────────── -->
-<script src="js/districts.js?v=2"></script>
-<script src="js/data.js?v=2"></script>
-<script src="js/water.js?v=2"></script>
-<script src="js/parallax.js?v=2"></script>
-<script src="js/charts.js?v=2"></script>
-<script src="js/panel.js?v=2"></script>
-<script src="js/island.js?v=2"></script>
-<script src="js/main.js?v=2"></script>
+  <!-- ── JavaScript — in dependency order ──────────────────────────────── -->
+  <script src="js/districts.js?v=2"></script>
+  <script src="js/data.js?v=2"></script>
+  <script src="js/water.js?v=2"></script>
+  <script src="js/parallax.js?v=2"></script>
+  <script src="js/charts.js?v=2"></script>
+  <script src="js/panel.js?v=2"></script>
+  <script src="js/island.js?v=2"></script>
+  <script src="js/main.js?v=2"></script>
 
 </body>
 </html>
