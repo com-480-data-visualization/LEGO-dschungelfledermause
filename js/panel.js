@@ -76,11 +76,14 @@ function renderIPPanel(district) {
   const ipCards = Object.entries(IP_SUB_DISTRICTS).map(([id, sub]) => {
     const sets = store.aggregated['ip_' + id];
     const count = sets ? sets.stats.totalSets : 0;
+    const labelHTML = sub.logo
+      ? `<img class="ip-card-logo" src="location_images/${sub.logo}" alt="${sub.label}">`
+      : `<div class="ip-card-label">${sub.label}</div>`;
     return `
       <div class="ip-card" data-sub="${id}" role="button" tabindex="0"
            style="border-color: ${sub.color};"
            aria-label="${sub.label}, ${count} sets">
-        <div class="ip-card-label">${sub.label}</div>
+        ${labelHTML}
         <div class="ip-card-count">${count} sets</div>
       </div>
     `;
