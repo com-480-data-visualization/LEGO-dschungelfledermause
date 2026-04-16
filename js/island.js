@@ -162,7 +162,7 @@ function zoomToDistrict(district) {
   const shiftY = targetCenterY - districtVpY;
 
   wrapper.style.transition = 'transform 600ms cubic-bezier(0.4, 0, 0.2, 1)';
-  wrapper.style.transform  = `translate(${shiftX}px, ${shiftY}px) scale(${SCALE})`;
+  wrapper.style.transform  = `translate(calc(-50% + ${shiftX}px), calc(-50% + ${shiftY}px)) scale(${SCALE})`;
 
   scene.classList.add('zoomed');
 }

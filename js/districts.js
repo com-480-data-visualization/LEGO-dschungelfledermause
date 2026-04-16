@@ -120,7 +120,7 @@ const DISTRICTS = {
     accentColor: '#c77dff',
     motif: 'ip',
     image: 'licensed.jpg',
-    // logo: 'licensedLogo.png',  // add when available
+    logo: 'licensedLogo.png',  // add when available
     isFolder: true,
     // IP sets are spread across Licensed themeGroup + several Action/Adventure themes
     matcher: row =>
