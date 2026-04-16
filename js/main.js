@@ -11,8 +11,9 @@
 (async function () {
   const loadingEl = document.getElementById('loading-screen');
 
-  // Water starts immediately — visible during data load
+  // Water and dolphins start immediately — visible during data load
   initWater(document.getElementById('water-canvas'));
+  initDolphins(document.getElementById('dolphin-canvas'));
 
   try {
     await initData();
