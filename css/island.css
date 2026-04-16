@@ -70,6 +70,43 @@
   transform: translateY(2px);
 }
 
+/* Logo image beneath badge (replaces text label when available) */
+.district-logo {
+  height: 36px;
+  width: auto;
+  max-width: 90px;
+  object-fit: contain;
+  pointer-events: none;
+  filter:
+    drop-shadow(0 1px 4px rgba(0,0,0,0.75))
+    drop-shadow(0 0 10px rgba(0,0,0,0.5));
+  transition: transform var(--t-hover);
+}
+
+.district-marker:hover .district-logo {
+  transform: translateY(2px);
+}
+
+/* Badge with a photo inside — ensure the image is clipped to the circle */
+.district-badge.has-image {
+  overflow: hidden;
+}
+
+/* Subtle dark vignette over photo so the pulse ring border still reads */
+.district-badge.has-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    transparent 45%,
+    rgba(0,0,0,0.3) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* Pulse ring behind badge on idle (subtle attention) */
 .district-badge::after {
   content: '';
