@@ -36,15 +36,21 @@ function createMarker(id, district) {
 
   // Badge (colored circle)
   const badge = document.createElement('div');
-  badge.className    = 'district-badge';
-  badge.style.background = district.color;
-  badge.style.color      = district.accentColor;  // used by ::after pulse ring
+  badge.className = 'district-badge';
+  badge.style.color = district.accentColor;  // used by ::after pulse ring
 
-  // Motif inside badge
-  const motif = document.createElement('div');
-  motif.className = `district-motif motif-${district.motif}`;
-  appendMotifChildren(motif, district.motif);
-  badge.appendChild(motif);
+  if (district.image) {
+    // Photo fills the circle; district color shows as fallback while loading
+    badge.classList.add('has-image');
+    badge.style.background = `url('location_images/${district.image}') center/cover, ${district.color}`;
+  } else {
+    // Solid color + CSS motif fallback
+    badge.style.background = district.color;
+    const motif = document.createElement('div');
+    motif.className = `district-motif motif-${district.motif}`;
+    appendMotifChildren(motif, district.motif);
+    badge.appendChild(motif);
+  }
 
   // Hover hint
   const hint = document.createElement('div');
@@ -52,13 +58,21 @@ function createMarker(id, district) {
   hint.textContent = district.isFolder ? 'Click to explore' : 'Click to view data';
   badge.appendChild(hint);
 
-  // Label below badge
-  const label = document.createElement('div');
-  label.className   = 'district-label';
-  label.textContent = district.label;
-
   marker.appendChild(badge);
-  marker.appendChild(label);
+
+  // Logo image or text label below badge
+  if (district.logo) {
+    const logoImg = document.createElement('img');
+    logoImg.className = 'district-logo';
+    logoImg.src = `location_images/${district.logo}`;
+    logoImg.alt = district.label;
+    marker.appendChild(logoImg);
+  } else {
+    const label = document.createElement('div');
+    label.className   = 'district-label';
+    label.textContent = district.label;
+    marker.appendChild(label);
+  }
 
   const activate = () => handleDistrictClick(id);
   marker.addEventListener('click', activate);
