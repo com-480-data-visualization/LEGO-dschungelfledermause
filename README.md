@@ -51,7 +51,7 @@ Key inspirations: the 1997 game LEGO Island for the world aesthetic; Mini Metro 
 
 **10% of the final grade**
 
-https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone2%20writeup.pdf
+https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone2-report.pdf
 
 
 ## Milestone 3 (29th May, 5pm)
