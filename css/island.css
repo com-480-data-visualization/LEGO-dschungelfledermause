@@ -26,14 +26,16 @@
     0 0 0 3px rgba(255,255,255,0.25);
   transition:
     transform var(--t-hover),
+    opacity var(--t-hover),
     box-shadow var(--t-hover),
     filter var(--t-hover);
   border: 2.5px solid rgba(255,255,255,0.4);
+  transform: scale(var(--badge-scale, 1));
 }
 
 .district-marker:hover .district-badge,
 .district-marker:focus-visible .district-badge {
-  transform: scale(1.12) translateY(-3px);
+  transform: scale(calc(var(--badge-scale, 1) * 1.12)) translateY(-3px);
   box-shadow:
     0 8px 24px rgba(0,0,0,0.45),
     0 0 0 3px rgba(255,255,255,0.5);

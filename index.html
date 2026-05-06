@@ -13,13 +13,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 
   <!-- Styles in dependency order -->
-  <link rel="stylesheet" href="css/variables.css?v=2">
-  <link rel="stylesheet" href="css/reset.css?v=2">
-  <link rel="stylesheet" href="css/layout.css?v=2">
-  <link rel="stylesheet" href="css/island.css?v=3">
-  <link rel="stylesheet" href="css/panel.css?v=3">
-  <link rel="stylesheet" href="css/charts.css?v=2">
-  <link rel="stylesheet" href="css/animations.css?v=2">
+  <link rel="stylesheet" href="css/variables.css?v=6">
+  <link rel="stylesheet" href="css/reset.css?v=6">
+  <link rel="stylesheet" href="css/layout.css?v=6">
+  <link rel="stylesheet" href="css/island.css?v=6">
+  <link rel="stylesheet" href="css/panel.css?v=6">
+  <link rel="stylesheet" href="css/charts.css?v=6">
+  <link rel="stylesheet" href="css/animations.css?v=6">
 
   <!-- D3 v7 and PapaParse from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
@@ -38,6 +38,29 @@
   <div id="page-title" aria-hidden="true">
     <h1>LEGO Island</h1>
     <p>A visual journey through 50 years of sets</p>
+  </div>
+
+  <!-- ── Year interval slider ─────────────────────────────────────────── -->
+  <div id="year-slider-panel" role="group" aria-label="Filter sets by year interval">
+    <div class="slider-content">
+      <div class="slider-header-new">
+        <span id="slider-range-label" class="slider-year-text">1970 &ndash; 2022</span>
+        <span id="slider-count-label" class="slider-count-text">... sets</span>
+      </div>
+      <div class="slider-track-container">
+        <input type="range" id="slider-year-start" min="1970" max="2022" value="1970" aria-label="Start year">
+        <input type="range" id="slider-year-end" min="1970" max="2022" value="2022" aria-label="End year">
+        <div class="slider-track-fill" id="slider-track-fill"></div>
+      </div>
+      <div class="slider-ticks">
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">1970</div></div>
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">1980</div></div>
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">1990</div></div>
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">2000</div></div>
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">2010</div></div>
+        <div class="tick"><div class="tick-mark"></div><div class="tick-label">2020</div></div>
+      </div>
+    </div>
   </div>
 
   <!-- ── Main scene ────────────────────────────────────────────────────── -->
@@ -311,14 +334,14 @@
   <div id="chart-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <!-- ── JavaScript — in dependency order ──────────────────────────────── -->
-  <script src="js/districts.js?v=4"></script>
-  <script src="js/data.js?v=2"></script>
-  <script src="js/water.js?v=2"></script>
-  <script src="js/parallax.js?v=2"></script>
-  <script src="js/charts.js?v=2"></script>
-  <script src="js/panel.js?v=3"></script>
-  <script src="js/island.js?v=3"></script>
-  <script src="js/main.js?v=2"></script>
+  <script src="js/districts.js?v=5"></script>
+  <script src="js/data.js?v=5"></script>
+  <script src="js/water.js?v=5"></script>
+  <script src="js/parallax.js?v=5"></script>
+  <script src="js/charts.js?v=5"></script>
+  <script src="js/panel.js?v=5"></script>
+  <script src="js/island.js?v=5"></script>
+  <script src="js/main.js?v=5"></script>
 
 </body>
 

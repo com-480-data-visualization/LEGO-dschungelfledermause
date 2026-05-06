@@ -182,3 +182,57 @@ function resetZoom() {
   // Re-enable parallax after animation settles
   setTimeout(resumeParallax, 520);
 }
+
+// ── Dynamic Marker Sizing based on Time Interval ──────────────────────────
+
+function updateMarkerSizes(startYear, endYear) {
+  if (typeof store === 'undefined' || !store.allSets) return;
+
+  const counts = {};
+  for (const id of Object.keys(DISTRICTS)) {
+    counts[id] = 0;
+  }
+
+  let totalSetsInRange = 0;
+
+  for (const row of store.allSets) {
+    if (row.year >= startYear && row.year <= endYear) {
+      for (const [id, district] of Object.entries(DISTRICTS)) {
+        if (district.matcher(row)) {
+          counts[id]++;
+          totalSetsInRange++;
+          break;
+        }
+      }
+    }
+  }
+
+  const maxCount = Math.max(...Object.values(counts), 1);
+  const container = document.getElementById('layer-districts');
+  if (!container) return;
+
+  for (const [id, count] of Object.entries(counts)) {
+    const marker = container.querySelector(`.district-marker[data-id="${id}"]`);
+    if (!marker) continue;
+
+    let scale = 0.4;
+    let opacity = 0.4;
+
+    if (count > 0) {
+      // Use square root scaling for area proportionality
+      const ratio = Math.sqrt(count) / Math.sqrt(maxCount);
+      // Min scale 0.6, max scale 1.5
+      scale = 0.6 + (ratio * 0.9);
+      opacity = 0.7 + (ratio * 0.3);
+    }
+
+    // Pass the scale as a custom property to the marker so CSS can handle hover accurately
+    marker.style.setProperty('--badge-scale', scale);
+    const badge = marker.querySelector('.district-badge');
+    if (badge) {
+      badge.style.opacity = opacity;
+    }
+  }
+
+  return totalSetsInRange;
+}
