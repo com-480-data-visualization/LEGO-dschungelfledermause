@@ -61,6 +61,10 @@ Any other static server (`npx serve`, VS Code Live Server, etc.) works equally w
 
 ---
 
+### Screencast
+https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone3/DataVisScreencast.mp4
+
+
 ### File Structure
 
 ```
