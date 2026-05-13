@@ -50,6 +50,7 @@ https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/mas
 **80% of the final grade**
 
 ### Live Site
+https://com-480-data-visualization.github.io/LEGO-dschungelfledermause/index.html
 
 **Recommended local setup (avoids CORS issues with the CSV):**
 ```bash
