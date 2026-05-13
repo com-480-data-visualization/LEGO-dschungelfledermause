@@ -71,35 +71,48 @@
 #loading-screen {
   position: fixed;
   inset: 0;
-  z-index: var(--z-loading);
-  background: var(--ocean-dark);
+  z-index: 999;
+  background: #0f1c30;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 20px;
-  transition: opacity var(--t-fade);
+  transition: opacity 0.4s;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 #loading-screen p {
-  font-family: var(--font-display);
-  font-size: 18px;
-  color: #ffffff;
-  letter-spacing: 0.12em;
+  font-family: 'Fredoka One', 'Nunito', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-.loading-ring {
-  width: 44px;
-  height: 44px;
-  border: 4px solid rgba(255,255,255,0.2);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
+.ld { display: flex; gap: 8px; }
+.ld span {
+  width: 20px; height: 20px; border-radius: 4px;
+  animation: ldp 1.1s ease-in-out infinite;
+  position: relative;
 }
+.ld span::before {
+  content: ''; position: absolute; top: -6px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 6px; border-radius: 3px 3px 0 0;
+  background: inherit;
+}
+.ld span:nth-child(1) { background: #f2cd37; }
+.ld span:nth-child(2) { background: #006cb7; animation-delay: .18s; }
+.ld span:nth-child(3) { background: #e3000b; animation-delay: .36s; }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes ldp {
+  0%, 100% { transform: translateY(0) scale(.85); opacity: .5; }
+  45% { transform: translateY(-10px) scale(1); opacity: 1; }
 }
 
 /* ── Page title (top-left overlay on the island scene) ──────────────────── */
