@@ -23,6 +23,7 @@ const gColor = g => GP[g] || '#94a3b8';
 /* ── Utilities ────────────────────────────────────────────────────────── */
 function fmt(n) { return n >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'')+'k' : String(Math.round(n)); }
 function animN(el, target, dur=1400) {
+  if (!el) return;
   const t0 = performance.now();
   (function go() {
     const p = Math.min((performance.now()-t0)/dur, 1);
