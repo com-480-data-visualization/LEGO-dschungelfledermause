@@ -10,13 +10,6 @@
 
 ## Milestone 1 (20th March, 5pm)
 
-**10% of the final grade**
-
-This is a preliminary milestone to let you set up goals for your final project and assess the feasibility of your ideas.
-Please, fill the following sections about your project.
-
-*(max. 2000 characters per section)*
-
 ### Dataset
 
 >
@@ -49,14 +42,137 @@ Key inspirations: the 1997 game LEGO Island for the world aesthetic; Mini Metro 
 
 ## Milestone 2 (17th April, 5pm)
 
-**10% of the final grade**
-
 https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone2-report.pdf
 
 
 ## Milestone 3 (29th May, 5pm)
 
 **80% of the final grade**
+
+### Live Site
+
+**Recommended local setup (avoids CORS issues with the CSV):**
+```bash
+# Python 3
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
+Any other static server (`npx serve`, VS Code Live Server, etc.) works equally well.
+
+---
+
+### File Structure
+
+```
+LEGO-dschungelfledermause/
+├── index.html          # Main island map page
+├── story.html          # Linear data story page
+├── LEGO+Sets/
+│   ├── lego_sets.csv           # Primary dataset (18 457 rows, 14 fields)
+│   └── lego_sets_data_dictionary.csv
+├── css/
+│   ├── variables.css   # Design tokens (colours, fonts, spacing)
+│   ├── reset.css       # Box-model reset
+│   ├── layout.css      # Page scaffold, title, year slider
+│   ├── island.css      # District markers and bubble styles
+│   ├── panel.css       # Slide-in detail panel
+│   ├── charts.css      # D3 chart containers and set-card grid
+│   └── animations.css  # Keyframes (loading, easter egg, etc.)
+├── js/
+│   ├── districts.js    # District & IP sub-district configuration (coords, colours, matchers)
+│   ├── data.js         # CSV loading (PapaParse), filtering, aggregation → global `store`
+│   ├── island.js       # District bubble rendering, click → zoom, IntersectionObserver
+│   ├── panel.js        # Detail panel open/close, district vs IP folder views
+│   ├── charts.js       # All four D3 charts (timeline, histogram, price line, bar)
+│   ├── water.js        # Animated water-ripple canvas (WebGL-free, 2D canvas)
+│   ├── parallax.js     # Mouse-parallax on island and district layers
+│   ├── main.js         # Boot sequence: loads data, wires slider, initialises everything
+│   ├── easter-egg.js   # Konami code easter egg (try find the easter egg!!)
+│   ├── jetski.js       # Periodic jetski animation across ocean corners
+│   └── story.js        # Data story page: D3 charts, scroll-reveal, animated counters
+└── location_images/    # District photos, logos, island PNG, jetski sprites, favicon
+```
+
+---
+
+### Technical Architecture
+
+#### Data pipeline (`data.js`)
+The CSV is fetched and parsed at runtime by [PapaParse](https://www.papaparse.com/). The pipeline:
+1. Filters to `category === "Normal"` (12 757 sets).
+2. Applies the active year-range slider window.
+3. Groups rows by district using each district's `matcher` function (defined in `districts.js`).
+4. Computes aggregated statistics per district (total sets, avg pieces, price range, year span) and stores everything in a global `store` object consumed by `panel.js` and `charts.js`.
+
+Re-aggregation runs on every slider change; charts re-render without a page reload.
+
+#### Island map (`island.js`, `districts.js`)
+Eight districts are defined in `districts.js`, each with:
+- SVG coordinate centre (`cx`, `cy`) in a 1100 × 720 viewBox
+- A `matcher` function that assigns CSV rows to the district by `themeGroup`, `theme`, or custom logic
+- Colour, label, description, and optional image/logo assets
+
+The island is a PNG image (`lego_island.png`) rendered inside the SVG. District bubbles (circles with photos and logos) are positioned absolutely over the SVG using the same coordinate space, converted to percentages so they scale with the viewport.
+
+The **IP Partnerships** district is a special "folder" node. Clicking it opens a sub-panel with franchise cards (Star Wars, Harry Potter, Marvel, etc.) rather than charts directly.
+
+#### Year slider
+A dual-thumb range slider (two overlapping `<input type="range">`) controls the active year window (1970–2022). Moving either thumb triggers a full re-aggregation and re-render of all open charts.
+
+#### Charts (`charts.js`)
+All charts are built with [D3 v7](https://d3js.org/) and rendered into containers injected by `panel.js`. Four chart types per district:
+| Chart | Description |
+|---|---|
+| **Timeline** | Bar chart — sets released per year |
+| **Histogram** | Piece count distribution (log-scale bins) |
+| **Price line** | Average retail price over time (only years with data) |
+| **Top subthemes** | Horizontal bar chart of the 8 most prolific subthemes |
+
+Charts are cleared (`clearCharts()`) and rebuilt each time a panel opens, keeping the DOM lean.
+
+#### Data story (`story.html`, `story.js`)
+A separate, self-contained linear narrative page with five chapters, each containing a full-page D3 visualisation:
+
+| Chapter | Chart | Key insight |
+|---|---|---|
+| 1 | **Heatmap** | Set count per theme group × 5-year period |
+| 2 | **Nightingale Rose** | Relative size of each theme group (petal length = √set count) |
+| 3 | **Treemap** | Theme hierarchy — click to drill from group → individual theme |
+| 4 | **Chord diagram** | Relationship between theme groups and piece-size tiers |
+| 5 | **Sunburst** | Two-ring radial view of all theme groups and their constituent themes |
+
+The page uses an `IntersectionObserver` to trigger CSS fade-in animations as sections scroll into view, and a second observer to drive the active-state highlight on the fixed left-sidebar navigation.
+
+---
+
+### Intended Usage
+
+#### Island map (index.html)
+1. **Explore freely** — pan around the island with mouse or touch; the water canvas ripples in real time.
+2. **Filter by era** — drag the year-range slider at the bottom to narrow the dataset to any window between 1970 and 2022. District bubble sizes update to reflect the filtered set count.
+3. **Click a district** — the island zooms toward the chosen district and a detail panel slides up from the bottom. The panel shows four charts plus a scrollable grid of up to 24 set images sorted by piece count.
+4. **IP Partnerships folder** — click the district to open a franchise selector. Pick a franchise (Star Wars, Harry Potter, etc.) to see charts and sets for that licence specifically.
+5. **Close the panel** — click the × button or the backdrop to zoom back out and return to the full island view.
+
+#### Data story (story.html)
+1. Arrive at the hero section and use the five coloured chapter-tile buttons to jump directly to any visualisation, or scroll continuously top-to-bottom.
+2. The **left sidebar** shows a coloured LEGO brick per chapter; the active brick highlights as you scroll. Click any brick to jump to that chapter. Hover for the chapter name. The back-arrow at the top returns to the island.
+3. Each chapter has an interactive chart — hover for tooltips, click to drill down (treemap / sunburst), or use the dropdown controls (chord diagram).
+
+#### Easter egg
+Enter the Konami code — **↑ ↑ ↓ ↓ ← → ← → B A** — on the island page to find the secret easter egg.
+
+---
+
+### Dependencies
+
+All loaded from CDN — no `npm install` required.
+
+| Library | Version | Used for |
+|---|---|---|
+| [D3.js](https://d3js.org/) | v7 | All charts on both pages |
+| [PapaParse](https://www.papaparse.com/) | v5 | CSV parsing |
+| [Google Fonts](https://fonts.google.com/) | — | Fredoka One, Nunito, Inter |
 
 
 ## Late policy
