@@ -43,7 +43,59 @@ function moveTip(evt) {
 }
 function hideTip() { tip.style.opacity='0'; }
 
-/* ── Load ─────────────────────────────────────────────────────────────── */
+/* ── Modal ────────────────────────────────────────────────────────────── */
+const backdrop = document.getElementById('sets-modal-backdrop');
+const modal    = document.getElementById('sets-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalCount = document.getElementById('modal-count');
+const setsGrid   = document.getElementById('sets-grid');
+
+function openSetsModal(title, colorHex, sets) {
+  modalTitle.childNodes[0].textContent = title + ' ';
+  modalTitle.style.borderLeft = `4px solid ${colorHex}`;
+  modalTitle.style.paddingLeft = '10px';
+  modalCount.textContent = sets.length + ' sets';
+
+  setsGrid.innerHTML = sets
+    .sort((a,b)=>+a.year - +b.year)
+    .map(r => {
+      const price = r.US_retailPrice > 0 ? `$${r.US_retailPrice}` : '';
+      const pcs   = r.pieces > 0 ? `${r.pieces} pcs` : '';
+      const imgSrc = r.thumbnailURL || '';
+      const img = imgSrc
+        ? `<img class="set-card-img" src="${imgSrc}" loading="lazy" alt="" onerror="this.style.display='none'"/>`
+        : '';
+      const href = r.bricksetURL || '#';
+      return `
+        <a class="set-card" href="${href}" target="_blank" rel="noopener">
+          <div class="set-card-img" style="display:flex;align-items:center;justify-content:center;font-size:28px;color:#ddd">${img || '🧱'}</div>
+          <div class="set-card-body">
+            <div class="set-card-name">${(r.name||'Unknown').replace(/</g,'&lt;')}</div>
+            <div class="set-card-meta">
+              <span>${r.year||'?'}</span>
+              ${pcs   ? `<span>${pcs}</span>`   : ''}
+              ${price ? `<span>${price}</span>` : ''}
+            </div>
+          </div>
+        </a>`;
+    }).join('');
+
+  backdrop.classList.add('open');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  backdrop.classList.remove('open');
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+backdrop.addEventListener('click', closeModal);
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+
 async function main() {
   const loading = document.getElementById('loading');
   let rows;
@@ -78,19 +130,20 @@ async function main() {
    1. HEATMAP — themeGroup × 5-year period
 ══════════════════════════════════════════════════════════════════════ */
 function buildHeatmap(rows) {
-  const periods = d3.range(1970, 2023, 5).map(y => `${y}–${y+4}`);
   const periodOf = y => `${Math.floor(y/5)*5}–${Math.floor(y/5)*5+4}`;
+  const periods = d3.range(1970, 2023, 5).map(y => `${y}–${y+4}`);
 
   const groups = [...new Set(rows.map(r=>r.themeGroup).filter(Boolean))]
     .map(g => ({ g, n: rows.filter(r=>r.themeGroup===g).length }))
     .sort((a,b)=>b.n-a.n).map(d=>d.g).slice(0,12);
 
-  // Build matrix
+  // Build matrix — store numeric pStart so click filter avoids string/dash encoding issues
   const matrix = [];
   groups.forEach(g => {
-    periods.forEach(p => {
-      const cnt = rows.filter(r=>r.themeGroup===g && r.year && periodOf(+r.year)===p).length;
-      matrix.push({ g, p, cnt });
+    d3.range(1970, 2023, 5).forEach(pStart => {
+      const p = periods[Math.floor((pStart - 1970) / 5)];
+      const cnt = rows.filter(r => r.themeGroup===g && r.year && Math.floor(+r.year/5)*5===pStart).length;
+      matrix.push({ g, p, pStart, cnt });
     });
   });
 
@@ -145,6 +198,13 @@ function buildHeatmap(rows) {
     .on('mouseleave', (evt) => {
       hideTip();
       d3.select(evt.currentTarget).attr('stroke',null);
+    })
+    .on('click', (_,d) => {
+      if(d.cnt === 0) return;
+      const matchedSets = rows.filter(r =>
+        r.themeGroup === d.g && r.year && Math.floor(+r.year / 5) * 5 === d.pStart
+      );
+      openSetsModal(`${d.g} · ${d.p}`, gColor(d.g), matchedSets);
     });
 
   // Cell count labels (only for cells with enough space)
@@ -314,16 +374,25 @@ function buildTreemap(rows) {
       });
 
     g.on('mouseover',(evt,d)=>{
-      showTip(`<strong>${d.data.name}</strong><br>${d.data.group||''}<br>${d.value} sets`, evt);
+      const action = node===root ? 'Click to explore' : 'Click to see sets';
+      showTip(`<strong>${d.data.name}</strong><br>${d.data.group||''} &middot; ${d.value} sets<br><span style="color:#aaa;font-size:11px">${action}</span>`, evt);
       d3.select(evt.currentTarget).select('rect').attr('opacity',1);
     }).on('mousemove',moveTip)
     .on('mouseleave',(evt)=>{
       hideTip();
       d3.select(evt.currentTarget).select('rect').attr('opacity',.78);
     }).on('click',(_,d)=>{
-      // Drill into group
-      const grp = node.children?.find(c=>c.data.name===d.data.group);
-      if(grp && !isLeaf) { currentRoot=grp; renderFrom(grp); }
+      if(node === root) {
+        // Drill into this theme group
+        const grp = node.children?.find(c=>c.data.name===d.data.group);
+        if(grp) { currentRoot=grp; renderFrom(grp); }
+      } else {
+        // At theme level — open sets modal
+        const themeSets = rows.filter(r => r.theme === d.data.name);
+        if(themeSets.length) {
+          openSetsModal(d.data.name, gColor(d.data.group||node.data.name), themeSets);
+        }
+      }
     });
 
     // Breadcrumb
