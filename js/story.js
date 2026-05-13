@@ -323,9 +323,9 @@ function buildTreemap(rows) {
   let currentRoot = root;
 
   function render(node) {
-    layout(node.copy().sum(d=>d.value||0).sort((a,b)=>b.value-a.value));
+    const isRoot = node.data.name === 'All themes';
     // Actually, we re-layout from the chosen subtree:
-    const sub = node === root ? root : d3.hierarchy({...node.data, children: node.children?.map(c=>c.data)})
+    const sub = isRoot ? node : d3.hierarchy({...node.data, children: node.children?.map(c=>c.data)})
       .sum(d=>d.value||0).sort((a,b)=>b.value-a.value);
     layout(sub);
 
@@ -336,7 +336,7 @@ function buildTreemap(rows) {
     const isLeaf = !sub.children;
 
     // Draw group headers
-    if(!isLeaf) {
+    if(isRoot) {
       svg.selectAll('.g-header').data(groups).join('rect')
         .attr('x',d=>d.x0).attr('y',d=>d.y0)
         .attr('width',d=>d.x1-d.x0).attr('height',d=>d.y1-d.y0)
@@ -369,14 +369,14 @@ function buildTreemap(rows) {
       .style('font-size',d=>Math.min(11, Math.max(7,(d.x1-d.x0)/7))+'px')
       .style('font-weight','700').style('fill','#fff')
       .style('font-family','Inter,system-ui').style('pointer-events','none')
+      .style('text-shadow', d => ((d.x1-d.x0) < 70 || (d.y1-d.y0) < 30) ? 'none' : '0 1px 3px rgba(0,0,0,0.5)')
       .text(d=>{
-        const w=d.x1-d.x0, h=d.y1-d.y0;
-        if(w<24||h<14) return '';
+        const w=d.x1-d.x0;
         return w > 50 ? d.data.name : d.data.name.slice(0,Math.floor(w/7));
       });
 
     g.on('mouseover',(evt,d)=>{
-      const action = node===root ? 'Click to explore' : 'Click to see sets';
+      const action = isRoot ? 'Click to explore' : 'Click to see sets';
       showTip(`<strong>${d.data.name}</strong><br>${d.data.group||''} &middot; ${d.value} sets<br><span style="color:#aaa;font-size:11px">${action}</span>`, evt);
       d3.select(evt.currentTarget).select('rect').attr('opacity',1);
     }).on('mousemove',moveTip)
@@ -384,7 +384,7 @@ function buildTreemap(rows) {
       hideTip();
       d3.select(evt.currentTarget).select('rect').attr('opacity',.78);
     }).on('click',(_,d)=>{
-      if(node === root) {
+      if(isRoot) {
         // Drill into this theme group
         const grp = node.children?.find(c=>c.data.name===d.data.group);
         if(grp) { currentRoot=grp; renderFrom(grp); }
@@ -398,12 +398,16 @@ function buildTreemap(rows) {
     });
 
     // Breadcrumb
-    crumb.innerHTML = node===root
+    crumb.innerHTML = isRoot
       ? `<span data-level="root" style="color:#333;font-weight:700">All themes</span>`
       : `<span data-level="root" style="cursor:pointer;color:var(--b)">All themes</span>
          <span class="sep">›</span>
          <span style="color:#333;font-weight:700">${node.data.name}</span>`;
-    crumb.querySelector('[data-level="root"]')?.addEventListener('click',()=>renderFrom(root));
+    crumb.querySelector('[data-level="root"]')?.addEventListener('click',() => {
+      const newRoot = d3.hierarchy(rootData).sum(d=>d.value||0).sort((a,b)=>b.value-a.value);
+      currentRoot = newRoot;
+      renderFrom(newRoot);
+    });
   }
 
   function renderFrom(node) {
@@ -440,7 +444,7 @@ function buildChord(rows) {
   const svg = d3.select('#chord-svg').attr('width',SIZE).attr('height',SIZE)
     .attr('viewBox',`0 0 ${SIZE} ${SIZE}`);
 
-  const outerR = SIZE/2 - 30, innerR = outerR - 20;
+  const outerR = SIZE/2 - 95, innerR = outerR - 20;
 
   const chord = d3.chord().padAngle(0.06).sortSubgroups(d3.descending)(matrix);
 
