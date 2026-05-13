@@ -126,7 +126,8 @@
   position: fixed;
   bottom: 32px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(0);
+  transition: transform 420ms cubic-bezier(.2, .8, .2, 1);
   z-index: 9999;
   background: #0f1c30;
   border: 2px solid #b38b36;
@@ -286,4 +287,8 @@
   color: #64748b;
   font-weight: 600;
   font-family: var(--font-body);
+}
+
+#year-slider-panel.slider-hidden {
+  transform: translateX(-50%) translateY(calc(100% + 64px));
 }
