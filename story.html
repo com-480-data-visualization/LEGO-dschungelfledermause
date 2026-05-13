@@ -18,7 +18,7 @@
   --muted:#666;
   --font-h:'Fredoka One','Nunito',sans-serif;
   --font-b:'Inter',system-ui;
-  --max:920px;--px:clamp(18px,5vw,64px);
+  --max:920px;--px:clamp(72px,6vw,80px);
   --shadow:0 4px 24px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);
   --radius:16px;
   /* stud strip — repeating LEGO colour bands */
@@ -62,45 +62,72 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--dark);line-heigh
 #loading p{font-family:var(--font-h);font-size:13px;color:rgba(255,255,255,.45);
   letter-spacing:.14em;text-transform:uppercase}
 
-/* ── Nav ──────────────────────────────────────────────────────────── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;flex-direction:column;
+/* ── Left sidebar nav ─────────────────────────────────────────────── */
+#side-nav{
+  position:fixed;left:0;top:0;bottom:0;width:64px;z-index:100;
+  display:flex;flex-direction:column;align-items:center;
   background:var(--dark);
+  border-right:1px solid rgba(255,255,255,.07);
+  padding:16px 0 18px;
 }
-.nav-inner{
-  height:48px;display:flex;align-items:center;gap:14px;padding:0 var(--px);
-  border-bottom:2px solid rgba(242,205,55,.25);
+.snav-back{
+  color:rgba(255,255,255,.38);text-decoration:none;
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:9px;border:1.5px solid rgba(255,255,255,.13);
+  transition:color .15s,border-color .15s,background .15s;
+  margin-bottom:20px;flex-shrink:0;
 }
-.nav-brand{
-  font-family:var(--font-h);font-size:18px;font-weight:400;
-  color:var(--y);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;
-  text-shadow:0 2px 0 rgba(0,0,0,.4)
+.snav-back:hover{color:var(--y);border-color:rgba(242,205,55,.5);background:rgba(242,205,55,.07)}
+.snav-bricks{
+  display:flex;flex-direction:column;gap:16px;flex:1;
+  justify-content:center;align-items:center;
 }
-.nav-links{display:flex;gap:3px;flex:1}
-.nav-links a{
-  color:rgba(255,255,255,.45);text-decoration:none;font-size:11px;font-weight:700;
-  letter-spacing:.07em;text-transform:uppercase;padding:4px 9px;border-radius:6px;
-  transition:color .14s,background .14s
+.snav-brick{
+  position:relative;width:40px;height:40px;
+  background:var(--bc);border-radius:8px;
+  color:#fff;font-family:var(--font-h);font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;overflow:visible;
+  box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 -2px 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.2);
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s;
 }
-.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.12)}
-.nav-badge{
-  font-family:var(--font-h);font-size:12px;letter-spacing:.05em;
-  text-transform:uppercase;color:var(--dark);background:var(--y);
-  padding:3px 12px;border-radius:100px
+.snav-brick::before{
+  content:'';position:absolute;
+  top:-7px;left:50%;transform:translateX(-50%);
+  width:16px;height:7px;background:var(--bc);
+  border-radius:50% 50% 0 0/55% 55% 0 0;
+  box-shadow:0 -2px 0 rgba(0,0,0,.25);
 }
-.nav-back{
-  color:rgba(255,255,255,.45);text-decoration:none;font-size:10.5px;font-weight:700;
-  letter-spacing:.07em;text-transform:uppercase;padding:5px 11px;border-radius:6px;
-  border:1.5px solid rgba(255,255,255,.2);
-  transition:color .14s,border-color .14s;margin-left:auto
+.snav-brick:hover{transform:translateX(4px)}
+.snav-brick.active{
+  transform:translateX(6px);
+  box-shadow:0 4px 0 rgba(0,0,0,.4),inset 0 -2px 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.2),3px 0 0 rgba(255,255,255,.3);
 }
-.nav-back:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+.snav-label{
+  position:absolute;left:calc(100% + 10px);top:50%;
+  transform:translateY(-50%) translateX(-5px);
+  background:var(--bc);color:#fff;
+  font-family:var(--font-h);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  padding:5px 11px;border-radius:6px;white-space:nowrap;
+  opacity:0;pointer-events:none;
+  transition:opacity .14s,transform .14s;
+  box-shadow:0 2px 10px rgba(0,0,0,.28);
+}
+.snav-label::before{
+  content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);
+  border:5px solid transparent;border-right-color:var(--bc);
+}
+.snav-brick:hover .snav-label{opacity:1;transform:translateY(-50%) translateX(0)}
+.snav-brand{
+  font-family:var(--font-h);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.18);text-align:center;line-height:1.5;
+}
+@media(max-width:767px){#side-nav{display:none}}
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .hero{
   min-height:100vh;display:flex;flex-direction:column;
-  padding-top:50px; /* nav height */
   position:relative;overflow:hidden;
   background:var(--dark);
   /* subtle stud dot-grid watermark */
@@ -422,7 +449,6 @@ footer{background:var(--dark);padding:0}
 
 @media(max-width:680px){
   .hero-stats{grid-template-columns:repeat(2,1fr)}
-  .nav-links a:nth-child(n+3){display:none}
 }
 </style>
 </head>
@@ -431,20 +457,19 @@ footer{background:var(--dark);padding:0}
 <div id="loading"><div class="ld"><span></span><span></span><span></span></div><p>Loading LEGO data…</p></div>
 <div id="tip" class="tip"></div>
 
-<nav>
-  <div class="nav-inner">
-    <a class="nav-brand" href="#top">LEGO Island</a>
-    <div class="nav-links">
-      <a href="#ch1">Heatmap</a>
-      <a href="#ch2">Rose</a>
-      <a href="#ch3">Treemap</a>
-      <a href="#ch4">Chord</a>
-      <a href="#ch5">Sunburst</a>
-    </div>
-    <span class="nav-badge">Data Story</span>
-    <a class="nav-back" href="index.html">← Back to Island</a>
-  </div>
-</nav>
+<aside id="side-nav" aria-label="Page navigation">
+  <a class="snav-back" href="index.html" title="Back to Island" aria-label="Back to Island">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </a>
+  <nav class="snav-bricks" aria-label="Chapters">
+    <a class="snav-brick" href="#ch1" data-ch="ch1" style="--bc:#006cb7" aria-label="Chapter 1: Heatmap">1<span class="snav-label">Heatmap</span></a>
+    <a class="snav-brick" href="#ch2" data-ch="ch2" style="--bc:#00a650" aria-label="Chapter 2: Rose">2<span class="snav-label">Rose</span></a>
+    <a class="snav-brick" href="#ch3" data-ch="ch3" style="--bc:#e3000b" aria-label="Chapter 3: Treemap">3<span class="snav-label">Treemap</span></a>
+    <a class="snav-brick" href="#ch4" data-ch="ch4" style="--bc:#7c3aed" aria-label="Chapter 4: Chord">4<span class="snav-label">Chord</span></a>
+    <a class="snav-brick" href="#ch5" data-ch="ch5" style="--bc:#0096a0" aria-label="Chapter 5: Sunburst">5<span class="snav-label">Sunburst</span></a>
+  </nav>
+  <div class="snav-brand">LEGO<br>Island</div>
+</aside>
 
 <!-- HERO -->
 <header class="hero" id="top">
@@ -620,5 +645,18 @@ footer{background:var(--dark);padding:0}
 </div>
 
 <script src="js/story.js"></script>
+<script>
+(function(){
+  const bricks = document.querySelectorAll('.snav-brick[data-ch]');
+  if(!bricks.length) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const b = document.querySelector(`.snav-brick[data-ch="${e.target.id}"]`);
+      if(b) b.classList.toggle('active', e.isIntersecting);
+    });
+  }, { rootMargin:'-35% 0px -35% 0px', threshold:0 });
+  document.querySelectorAll('section[id^="ch"]').forEach(s => obs.observe(s));
+})();
+</script>
 </body>
 </html>
