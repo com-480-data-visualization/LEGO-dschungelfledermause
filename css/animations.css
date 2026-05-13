@@ -73,6 +73,106 @@
 .chart-section:nth-child(3) { animation-delay: 0.19s; }
 .chart-section:nth-child(4) { animation-delay: 0.26s; }
 
+/* ── Easter egg: Konami code minifigure takeover ─────────────────────────── */
+#easter-egg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: background 0.25s ease;
+  cursor: pointer;
+}
+
+#easter-egg-overlay.active {
+  background: rgba(10, 10, 20, 0.92);
+}
+
+#easter-egg-overlay.exit {
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.45s ease;
+}
+
+#easter-egg-face {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  transform: scale(0) rotate(-20deg);
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 40px rgba(242, 205, 55, 0.6));
+}
+
+#easter-egg-overlay.active #easter-egg-face {
+  animation: eggSlam 0.45s cubic-bezier(0.1, 0.8, 0.2, 1.4) forwards,
+             eggWobble 0.5s ease-in-out 0.45s forwards;
+}
+
+#easter-egg-overlay.exit #easter-egg-face {
+  animation: eggExit 0.4s ease-in forwards !important;
+}
+
+@keyframes eggSlam {
+  0%   { transform: scale(0) rotate(-20deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes eggWobble {
+  0%   { transform: scale(1)    rotate(0deg); }
+  20%  { transform: scale(1.08) rotate(-6deg); }
+  40%  { transform: scale(0.97) rotate(5deg); }
+  60%  { transform: scale(1.04) rotate(-3deg); }
+  80%  { transform: scale(0.99) rotate(2deg); }
+  100% { transform: scale(1)    rotate(0deg); }
+}
+
+@keyframes eggExit {
+  0%   { transform: scale(1) rotate(0deg);   opacity: 1; }
+  100% { transform: scale(3) rotate(15deg);  opacity: 0; }
+}
+
+#easter-egg-text {
+  font-family: 'Fredoka One', 'Arial Rounded MT Bold', 'Nunito', sans-serif;
+  font-size: 40px;
+  color: #f2cd37;
+  text-align: center;
+  letter-spacing: 0.02em;
+  text-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(242, 205, 55, 0.35);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#easter-egg-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#easter-egg-overlay.exit #easter-egg-text,
+#easter-egg-overlay.exit #easter-egg-hint {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#easter-egg-hint {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#easter-egg-hint.visible {
+  opacity: 1;
+}
+
 /* ── Zoom state: hide markers when zoomed in (they distract from panel) ──── */
 .scene.zoomed #layer-districts {
   opacity: 0;

@@ -7,6 +7,7 @@
 
 const panelEl   = document.getElementById('detail-panel');
 const overlayEl = document.getElementById('panel-overlay');
+const sliderEl  = document.getElementById('year-slider-panel');
 
 function openPanel(districtId) {
   const district = DISTRICTS[districtId];
@@ -20,6 +21,7 @@ function openPanel(districtId) {
 
   panelEl.classList.add('open');
   overlayEl.classList.add('active');
+  sliderEl.classList.add('slider-hidden');
 
   overlayEl.addEventListener('click', closePanel, { once: true });
 }
@@ -27,6 +29,7 @@ function openPanel(districtId) {
 function closePanel() {
   panelEl.classList.remove('open');
   overlayEl.classList.remove('active');
+  sliderEl.classList.remove('slider-hidden');
   clearCharts();
   resetZoom();
 }

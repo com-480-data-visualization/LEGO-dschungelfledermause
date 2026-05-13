@@ -98,28 +98,69 @@
 /* ── Page title (top-left overlay on the island scene) ──────────────────── */
 #page-title {
   position: fixed;
-  top: 22px;
-  left: 28px;
+  top: 18px;
+  left: 22px;
   z-index: var(--z-districts);
   pointer-events: none;
 }
 
 #page-title h1 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: #ffffff;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+
+.lego-word-gap {
+  display: inline-block;
+  width: 8px;
+}
+
+.lego-brick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fredoka One', 'Arial Rounded MT Bold', 'Nunito', Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  background: var(--brick-bg, #e3000b);
+  color: var(--brick-text, #ffffff);
+  border-radius: 5px;
+  box-shadow:
+    0 4px 0 rgba(0,0,0,0.45),
+    inset 0 -3px 0 rgba(0,0,0,0.25),
+    inset 0 2px 0 rgba(255,255,255,0.25);
+  position: relative;
+  text-shadow: none;
+}
+
+/* Stud on top of each brick */
+.lego-brick::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 7px;
+  background: var(--brick-bg, #e3000b);
+  border-radius: 4px 4px 0 0;
+  box-shadow:
+    0 -2px 0 rgba(0,0,0,0.3),
+    inset 0 2px 0 rgba(255,255,255,0.2);
 }
 
 #page-title p {
-  font-size: 11px;
-  color: rgba(255,255,255,0.75);
-  letter-spacing: 0.08em;
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-top: 3px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  margin-top: 10px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  font-family: var(--font-body);
 }
 
 /* ── Year Interval Slider ───────────────────────────────────────────────── */
@@ -130,7 +171,8 @@
   position: fixed;
   bottom: 32px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(0);
+  transition: transform 420ms cubic-bezier(.2, .8, .2, 1);
   z-index: 9999;
   background: #0f1c30;
   border: 2px solid #b38b36;
@@ -290,4 +332,8 @@
   color: #64748b;
   font-weight: 600;
   font-family: var(--font-body);
+}
+
+#year-slider-panel.slider-hidden {
+  transform: translateX(-50%) translateY(calc(100% + 64px));
 }
