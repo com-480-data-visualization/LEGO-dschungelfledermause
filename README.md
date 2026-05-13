@@ -49,7 +49,7 @@ https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/mas
 ## Milestone 3 (29th May, 5pm)
 
 ### Milestone 3 report / Process Book
-https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone3/LEGO%20Island%20Process%20Book.pdf
+https://github.com/com-480-data-visualization/LEGO-dschungelfledermause/blob/master/milestone3/LEGO%20Island%20FINAL%20Process%20Book.pdf
 
 
 ### Live Site
