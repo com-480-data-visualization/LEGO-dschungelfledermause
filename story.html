@@ -119,11 +119,70 @@ body{font-family:var(--font-b);background:var(--bg);color:var(--dark);line-heigh
   border:5px solid transparent;border-right-color:var(--bc);
 }
 .snav-brick:hover .snav-label{opacity:1;transform:translateY(-50%) translateX(0)}
+.snav-island-link {
+  margin-top:16px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:rgba(255,255,255,.05);
+  transition:transform .2s, background .2s;
+}
+.snav-island-link img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+  transform:scale(1.3);
+}
+.snav-island-link:hover {
+  transform:scale(1.1) translateY(-2px);
+  background:rgba(255,255,255,.1);
+}
 .snav-brand{
   font-family:var(--font-h);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
   color:rgba(255,255,255,.18);text-align:center;line-height:1.5;
 }
-@media(max-width:767px){#side-nav{display:none}}
+#side-nav {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#side-nav.closed {
+  transform: translateX(-100%);
+}
+#snav-open {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 90;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: var(--dark);
+  color: rgba(255,255,255,.6);
+  border: 1.5px solid rgba(255,255,255,0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-20px);
+  transition: opacity 0.3s, transform 0.3s, background 0.15s, border-color 0.15s, color 0.15s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+#snav-open:hover {
+  background: rgba(242,205,55,.07);
+  border-color: rgba(242,205,55,.5);
+  color: var(--y);
+}
+#side-nav.closed ~ #snav-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+@media(max-width:767px){#side-nav, #snav-open{display:none}}
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .hero{
@@ -458,18 +517,26 @@ footer{background:var(--dark);padding:0}
 <div id="tip" class="tip"></div>
 
 <aside id="side-nav" aria-label="Page navigation">
-  <a class="snav-back" href="index.html" title="Back to Island" aria-label="Back to Island">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-  </a>
+  <button class="snav-back" onclick="document.getElementById('side-nav').classList.add('closed')" title="Hide Menu" aria-label="Hide Menu" style="cursor:pointer; background:none;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
   <nav class="snav-bricks" aria-label="Chapters">
     <a class="snav-brick" href="#ch1" data-ch="ch1" style="--bc:#006cb7" aria-label="Chapter 1: Heatmap">1<span class="snav-label">Heatmap</span></a>
     <a class="snav-brick" href="#ch2" data-ch="ch2" style="--bc:#00a650" aria-label="Chapter 2: Rose">2<span class="snav-label">Rose</span></a>
     <a class="snav-brick" href="#ch3" data-ch="ch3" style="--bc:#e3000b" aria-label="Chapter 3: Treemap">3<span class="snav-label">Treemap</span></a>
     <a class="snav-brick" href="#ch4" data-ch="ch4" style="--bc:#7c3aed" aria-label="Chapter 4: Chord">4<span class="snav-label">Chord</span></a>
     <a class="snav-brick" href="#ch5" data-ch="ch5" style="--bc:#0096a0" aria-label="Chapter 5: Sunburst">5<span class="snav-label">Sunburst</span></a>
+    
+    <a href="index.html" class="snav-island-link" title="Back to Island" aria-label="Back to Island">
+      <img src="location_images/lego_island.png" alt="LEGO Island">
+    </a>
   </nav>
   <div class="snav-brand">LEGO<br>Island</div>
 </aside>
+
+<button id="snav-open" aria-label="Open Menu" title="Open Menu" onclick="document.getElementById('side-nav').classList.remove('closed')">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+</button>
 
 <!-- HERO -->
 <header class="hero" id="top">
