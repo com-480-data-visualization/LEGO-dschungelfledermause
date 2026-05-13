@@ -48,7 +48,7 @@ function renderDistrictPanel(districtId, district) {
       <div class="panel-desc">${district.description}</div>
     </div>
     ${renderStatsHTML(data.stats, district.color)}
-    <div class="panel-body">
+    <div class="panel-body" style="--chart-accent:${district.color}">
       <div class="chart-section">
         <div class="chart-title">Sets released per year</div>
         <div class="chart-container" id="chart-timeline"></div>
@@ -138,7 +138,7 @@ function selectIPSub(subId, cardEl) {
   const subPanelEl = document.getElementById('ip-sub-panel');
 
   subPanelEl.innerHTML = `
-    <div class="panel-body">
+    <div class="panel-body" style="--chart-accent:${sub.color}">
       <div class="chart-section">
         <div class="chart-title">Sets released per year</div>
         <div class="chart-container" id="chart-timeline"></div>
@@ -220,7 +220,6 @@ function renderSetGridHTML(rows, color) {
 
 function renderStatsHTML(stats, color) {
   const fmt    = v => (v == null ? 'N/A' : v);
-  const fmtUSD = v => (v == null ? 'N/A' : '$' + v.toFixed(2));
 
   const years = (stats.yearMin != null && stats.yearMax != null)
     ? `${stats.yearMin}\u2013${stats.yearMax}`
@@ -230,24 +229,19 @@ function renderStatsHTML(stats, color) {
     ? `$${stats.priceMin.toFixed(0)}\u2013$${stats.priceMax.toFixed(0)}`
     : 'N/A';
 
+  const card = (value, label) => `
+    <div class="stat-item" style="--stat-color:${color}">
+      <span class="stat-value">${value}</span>
+      <span class="stat-label">${label}</span>
+    </div>`;
+
   return `
     <div class="stats-row">
-      <div class="stat-item">
-        <span class="stat-label">Total sets</span>
-        <span class="stat-value" style="color:${color}">${fmt(stats.totalSets)}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Years active</span>
-        <span class="stat-value">${years}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Avg pieces</span>
-        <span class="stat-value">${fmt(stats.avgPieces)}</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Price range</span>
-        <span class="stat-value">${priceRange}</span>
-      </div>
+      ${card(fmt(stats.totalSets),  'Total sets')}
+      ${card(years,                 'Years active')}
+      ${card(fmt(stats.avgPieces),  'Avg pieces')}
+      ${card(priceRange,            'Price range')}
     </div>
   `;
 }
+

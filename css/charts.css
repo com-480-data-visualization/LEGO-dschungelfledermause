@@ -1,7 +1,7 @@
 /* ── Chart section wrapper ───────────────────────────────────────────────── */
 .chart-section {
-  padding: 14px 0 4px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 18px 0 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
 }
 
 .chart-section:last-child {
@@ -9,13 +9,28 @@
 }
 
 .chart-title {
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-muted);
+  letter-spacing: 0.14em;
+  color: var(--text-secondary);
   font-family: var(--font-body);
-  margin-bottom: 8px;
+  font-weight: 700;
+  margin-bottom: 10px;
   padding: 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Colored accent pip before every chart title */
+.chart-title::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--chart-accent, rgba(0,0,0,0.18));
+  flex-shrink: 0;
 }
 
 .chart-container {
@@ -37,74 +52,95 @@
 
 .axis path,
 .axis line {
-  stroke: rgba(0,0,0,0.1);
+  stroke: rgba(0,0,0,0.09);
 }
 
 .axis .domain {
   display: none;
 }
 
+/* ── Horizontal grid lines (light) ──────────────────────────────────────── */
+.chart-grid line {
+  stroke: rgba(0,0,0,0.06);
+  stroke-dasharray: 3 3;
+}
+
+.chart-grid .domain {
+  display: none;
+}
+
 /* ── Chart elements ──────────────────────────────────────────────────────── */
 .chart-line {
   fill: none;
-  stroke-width: 2px;
+  stroke-width: 2.5px;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.18));
 }
 
 .chart-area {
-  opacity: 0.12;
+  opacity: 0.18;
 }
 
 .chart-dot {
-  transition: r 120ms ease;
+  transition: r 120ms ease, filter 120ms ease;
   cursor: pointer;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.22));
 }
 
 .chart-dot:hover {
   r: 5;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
 }
 
 .chart-bar {
   cursor: pointer;
-  transition: opacity 120ms ease;
+  transition: opacity 140ms ease, filter 140ms ease;
+  rx: 3;
 }
 
 .chart-bar:hover {
   opacity: 1 !important;
+  filter: brightness(1.12);
 }
 
 /* ── Shared tooltip ──────────────────────────────────────────────────────── */
 #chart-tooltip {
   position: fixed;
-  background: rgba(15, 15, 25, 0.88);
+  background: #1a1a2e;
   color: #ffffff;
-  padding: 6px 10px;
-  border-radius: 5px;
+  padding: 7px 12px;
+  border-radius: 7px;
   font-size: 12px;
   font-family: var(--font-body);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 120ms ease;
+  transition: opacity 100ms ease;
   z-index: var(--z-tooltip);
   white-space: nowrap;
   line-height: 1.5;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  border-left: 3px solid var(--chart-accent, #888);
 }
 
 /* ── Sparse data notice ──────────────────────────────────────────────────── */
 .chart-notice {
-  font-size: 10px;
+  font-size: 10.5px;
   color: var(--text-muted);
   font-style: italic;
-  padding: 2px 2px 6px;
+  padding: 2px 2px 8px;
   letter-spacing: 0.02em;
+  background: rgba(0,0,0,0.03);
+  border-radius: 4px;
+  padding: 5px 9px;
+  margin-bottom: 6px;
 }
 
 /* ── Bar label (count at end of horizontal bars) ────────────────────────── */
 .bar-label {
   font-size: 10px;
-  fill: var(--text-muted);
+  font-weight: 700;
+  fill: var(--text-secondary);
   font-family: var(--font-body);
 }
