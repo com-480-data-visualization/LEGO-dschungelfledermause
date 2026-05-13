@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>From Bricks to Blockbusters — LEGO Data Story</title>
+<meta name="description" content="Four chapters, four charts — exploring 50 years of LEGO through data."/>
+<link rel="icon" href="location_images/favicon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --y:#f2cd37;--r:#e3000b;--b:#006cb7;--g:#00a650;--pur:#7c3aed;
+  --dark:#0f0f1a;--mid:#1a1a2e;--panel:#fff;--bg:#f0f0eb;
+  --muted:#777;--font-h:'Nunito',sans-serif;--font-b:'Inter',system-ui;
+  --max:920px;--px:clamp(18px,5vw,64px);
+  --shadow:0 4px 30px rgba(0,0,0,.09),0 0 0 1px rgba(0,0,0,.055);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--bg);color:var(--dark);line-height:1.65}
+
+/* Loading */
+#loading{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:999;gap:18px;transition:opacity .4s}
+#loading.out{opacity:0;pointer-events:none}
+.ld{display:flex;gap:9px}
+.ld span{width:12px;height:12px;border-radius:50%;animation:ldp 1.2s ease-in-out infinite}
+.ld span:nth-child(1){background:var(--y)}.ld span:nth-child(2){background:var(--b);animation-delay:.2s}.ld span:nth-child(3){background:var(--r);animation-delay:.4s}
+@keyframes ldp{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+#loading p{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;
+  gap:14px;padding:0 var(--px);background:rgba(15,15,26,.88);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-brand{font-family:var(--font-h);font-size:14px;font-weight:900;color:var(--y);
+  text-decoration:none;letter-spacing:.07em;text-transform:uppercase}
+.nav-links{display:flex;gap:3px;flex:1}
+.nav-links a{color:rgba(255,255,255,.45);text-decoration:none;font-size:11px;font-weight:600;
+  letter-spacing:.07em;text-transform:uppercase;padding:4px 8px;border-radius:5px;
+  transition:color .14s,background .14s}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.1)}
+.nav-badge{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--y);border:1px solid rgba(242,205,55,.3);padding:2px 7px;border-radius:4px}
+.nav-back{color:rgba(255,255,255,.4);text-decoration:none;font-size:10.5px;font-weight:600;
+  letter-spacing:.07em;text-transform:uppercase;padding:4px 8px;border-radius:5px;
+  border:1px solid rgba(255,255,255,.14);transition:color .14s,border-color .14s;margin-left:auto}
+.nav-back:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:80px var(--px) 60px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0f0f1a 0%,#12213e 55%,#0a1a0a 100%)}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 70% 50%,rgba(0,108,183,.25) 0%,transparent 70%)}
+.hero-inner{max-width:var(--max);width:100%;margin:0 auto;position:relative}
+.kicker{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--y);margin-bottom:16px}
+.hero h1{font-family:var(--font-h);font-size:clamp(36px,7vw,72px);font-weight:900;
+  color:#fff;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+.hero h1 em{color:var(--y);font-style:normal}
+.hero-sub{font-size:clamp(14px,1.8vw,17px);color:rgba(255,255,255,.58);max-width:580px;
+  margin-bottom:44px;line-height:1.7}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;max-width:var(--max)}
+.hstat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:16px 14px}
+.hstat-n{font-family:var(--font-h);font-size:clamp(24px,3.5vw,36px);font-weight:800;
+  color:#fff;line-height:1;margin-bottom:4px}
+.hstat-n.y{color:var(--y)}.hstat-n.b{color:#60a5fa}.hstat-n.g{color:#4ade80}
+.hstat-l{font-size:9.5px;color:rgba(255,255,255,.38);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.scroll-cue{margin-top:48px;display:flex;flex-direction:column;align-items:flex-start;
+  gap:7px;color:rgba(255,255,255,.28);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:700;animation:bob 2.2s ease-in-out infinite}
+.scroll-cue .arr{display:block;width:14px;height:14px;border-right:2px solid;
+  border-bottom:2px solid;transform:rotate(45deg)}
+@keyframes bob{0%,100%{opacity:.28;transform:translateY(0)}50%{opacity:.65;transform:translateY(6px)}}
+
+/* Chapters */
+.chapter{padding:80px var(--px);max-width:calc(var(--max) + 2*var(--px));margin:0 auto}
+.chapter.light{background:var(--panel);max-width:none}
+.chapter.light .ch-inner{max-width:var(--max);margin:0 auto}
+.ch-inner{max-width:var(--max);margin:0 auto}
+.ch-kicker{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:9px}
+.ch-header{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+.ch-num{font-family:var(--font-h);font-size:50px;font-weight:900;color:var(--y);
+  line-height:1;opacity:.18;flex-shrink:0}
+.ch-header h2{font-family:var(--font-h);font-size:clamp(20px,3.5vw,32px);font-weight:800;
+  color:var(--dark);line-height:1.15}
+.ch-header h2 em{color:var(--b);font-style:normal}
+.ch-desc{font-size:14.5px;color:#555;max-width:600px;margin-bottom:28px;line-height:1.68}
+.chart-card{background:var(--panel);border-radius:14px;padding:22px 18px 16px;
+  box-shadow:var(--shadow);position:relative}
+.light .chart-card{background:var(--bg)}
+.chart-card-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px}
+
+/* Tooltip */
+.tip{position:fixed;pointer-events:none;background:var(--dark);color:#fff;
+  padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.5;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);opacity:0;transition:opacity .12s;
+  z-index:500;white-space:nowrap;max-width:240px;white-space:normal}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.leg-item{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;
+  font-weight:600;color:var(--muted);letter-spacing:.04em;cursor:default}
+.leg-swatch{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.leg-rect{width:16px;height:9px;border-radius:2px;flex-shrink:0}
+
+/* Chord controls */
+.chord-select-wrap{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.chord-select-wrap label{font-size:11px;font-weight:600;color:var(--muted);
+  letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.chord-select-wrap select{font-family:var(--font-b);font-size:12px;padding:4px 8px;
+  border-radius:6px;border:1px solid #ddd;background:#fff;color:var(--dark);cursor:pointer}
+
+/* Treemap */
+#treemap-svg text{font-family:var(--font-b);user-select:none}
+.tm-breadcrumb{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;
+  display:flex;align-items:center;gap:6px}
+.tm-breadcrumb span{cursor:pointer;padding:2px 6px;border-radius:4px;
+  transition:background .14s}
+.tm-breadcrumb span:hover{background:rgba(0,0,0,.07)}
+.tm-breadcrumb .sep{color:#ccc;cursor:default}
+
+/* Heatmap legend bar */
+.hm-legend{display:flex;align-items:center;gap:8px;margin-top:10px}
+.hm-legend-bar{flex:1;height:8px;border-radius:4px}
+.hm-legend-label{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* Fade-in */
+.fi{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+.fi.vis{opacity:1;transform:none}
+
+/* Takeaways */
+#takeaways{background:var(--dark);padding:80px var(--px)}
+#takeaways .ti{max-width:var(--max);margin:0 auto}
+#takeaways h2{font-family:var(--font-h);font-size:clamp(24px,4vw,36px);font-weight:800;color:#fff;margin-bottom:8px}
+#takeaways h2 em{color:var(--y);font-style:normal}
+#takeaways .ch-desc{color:rgba(255,255,255,.48)}
+.tw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:28px}
+.tw-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:20px 18px}
+.tw-icon{font-size:26px;margin-bottom:10px}
+.tw-card strong{display:block;font-family:var(--font-h);font-size:14px;font-weight:800;
+  color:#fff;margin-bottom:5px}
+.tw-card p{font-size:12.5px;color:rgba(255,255,255,.45);line-height:1.55}
+.credit{margin-top:36px;font-size:11px;color:rgba(255,255,255,.18);text-align:center}
+
+@media(max-width:680px){
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .nav-links a:nth-child(n+3){display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="loading"><div class="ld"><span></span><span></span><span></span></div><p>Loading LEGO data…</p></div>
+<div id="tip" class="tip"></div>
+
+<nav>
+  <a class="nav-brand" href="#top">LEGO Island</a>
+  <div class="nav-links">
+    <a href="#ch1">Heatmap</a>
+    <a href="#ch2">Rose</a>
+    <a href="#ch3">Treemap</a>
+    <a href="#ch4">Chord</a>
+    <a href="#takeaways">Insights</a>
+  </div>
+  <span class="nav-badge">Data Story</span>
+  <a class="nav-back" href="index.html">← Island</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <div class="kicker">LEGO Island · Data Story</div>
+    <h1>From Bricks<br>to <em>Blockbusters.</em></h1>
+    <p class="hero-sub">
+      12 000+ sets. 50 years. Four charts. Each visualisation reveals a different
+      dimension of how the world's most famous toy evolved — from simple building
+      blocks to a licensed entertainment empire.
+    </p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n y" id="s-sets">…</div><div class="hstat-l">Sets catalogued</div></div>
+      <div class="hstat"><div class="hstat-n b" id="s-themes">…</div><div class="hstat-l">Distinct themes</div></div>
+      <div class="hstat"><div class="hstat-n g" id="s-groups">…</div><div class="hstat-l">Theme groups</div></div>
+      <div class="hstat"><div class="hstat-n" id="s-years">52</div><div class="hstat-l">Years of history</div></div>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><span class="arr"></span></div>
+  </div>
+</header>
+
+<!-- CH1: HEATMAP -->
+<section class="chapter fi" id="ch1">
+  <div class="ch-inner">
+    <div class="ch-kicker">Chapter 1 · Heatmap</div>
+    <div class="ch-header"><span class="ch-num">1</span><h2>When each theme group <em>bloomed</em></h2></div>
+    <p class="ch-desc">
+      Each cell is a five-year period (column) × theme group (row). Colour intensity
+      shows how many sets were released. The licensed explosion of the 2000s is
+      impossible to miss — <strong>hover any cell</strong> for the exact count.
+    </p>
+    <div class="chart-card">
+      <div class="chart-card-label">Set count · theme group × 5-year period</div>
+      <div id="heatmap-wrap" style="overflow-x:auto">
+        <svg id="heatmap-svg" style="display:block"></svg>
+      </div>
+      <div class="hm-legend">
+        <span class="hm-legend-label">Fewer sets</span>
+        <div class="hm-legend-bar" id="hm-lgbar"></div>
+        <span class="hm-legend-label">More sets</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CH2: NIGHTINGALE ROSE -->
+<section class="chapter light fi" id="ch2">
+  <div class="ch-inner">
+    <div class="ch-kicker">Chapter 2 · Nightingale Rose</div>
+    <div class="ch-header"><span class="ch-num">2</span><h2>The shape of LEGO's <em>universe</em></h2></div>
+    <p class="ch-desc">
+      Each petal represents a theme group. Petal length = total set count (square-root scale).
+      The chart reveals the true dominance of Licensed IP and Modern Day themes.
+      <strong>Hover</strong> a petal to inspect it; <strong>click</strong> to isolate.
+    </p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+      <div class="chart-card" style="flex:1;min-width:280px">
+        <svg id="rose-svg" style="display:block;margin:0 auto"></svg>
+      </div>
+      <div id="rose-legend" class="legend" style="flex:0 0 220px;flex-direction:column;align-self:center"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CH3: TREEMAP -->
+<section class="chapter fi" id="ch3">
+  <div class="ch-inner">
+    <div class="ch-kicker">Chapter 3 · Treemap</div>
+    <div class="ch-header"><span class="ch-num">3</span><h2>Inside the <em>theme hierarchy</em></h2></div>
+    <p class="ch-desc">
+      Rectangle size = set count. Each outer rectangle = a theme group; inner rectangles = individual themes.
+      <strong>Click any group</strong> to drill in and see individual themes. Click the breadcrumb to go back.
+    </p>
+    <div class="chart-card">
+      <div class="tm-breadcrumb" id="tm-breadcrumb"><span data-level="root">All themes</span></div>
+      <svg id="treemap-svg" style="display:block;width:100%"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- CH4: CHORD -->
+<section class="chapter light fi" id="ch4">
+  <div class="ch-inner">
+    <div class="ch-kicker">Chapter 4 · Chord Diagram</div>
+    <div class="ch-header"><span class="ch-num">4</span><h2>Are licensed sets <em>bigger?</em></h2></div>
+    <p class="ch-desc">
+      Each arc is either a theme group or a piece-size tier. Chord width = how many sets
+      belong to that combination. The diagram reveals that <strong>Licensed sets skew surprisingly
+      small</strong> — collector Technic and Creator sets hold the piece-count crown.
+      <strong>Hover</strong> any arc or chord for details.
+    </p>
+    <div class="chart-card" style="text-align:center">
+      <svg id="chord-svg" style="display:inline-block;max-width:540px;width:100%"></svg>
+      <div id="chord-legend" class="legend" style="justify-content:center;margin-top:4px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section id="takeaways">
+  <div class="ti">
+    <div class="ch-kicker" style="color:rgba(255,255,255,.3)">Insights</div>
+    <h2>What the data <em>reveals</em></h2>
+    <p class="ch-desc">Four charts, four surprises about the world's most famous toy.</p>
+    <div class="tw-grid">
+      <div class="tw-card"><div class="tw-icon">🔥</div><strong>The licensed explosion</strong><p>Licensed releases tripled in the 2000s — the heatmap shows the decade lit up like never before.</p></div>
+      <div class="tw-card"><div class="tw-icon">🌹</div><strong>Modern Day dominates</strong><p>City, Police, and everyday themes rival Licensed in raw volume — LEGO's original identity is alive.</p></div>
+      <div class="tw-card"><div class="tw-icon">🗺️</div><strong>Star Wars reigns</strong><p>The treemap makes it clear: Star Wars alone is larger than entire theme groups from the 1990s.</p></div>
+      <div class="tw-card"><div class="tw-icon">🎵</div><strong>Technic = complexity king</strong><p>The chord diagram shows Technical/Model Making themes dominate the 500+ piece tier, not Licensed sets.</p></div>
+    </div>
+    <p class="credit">Data: Brickset.com · COM-480 Data Visualisation · LEGO Island</p>
+  </div>
+</section>
+
+<script src="js/story.js"></script>
+</body>
+</html>

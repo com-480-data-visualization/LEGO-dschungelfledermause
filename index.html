@@ -35,7 +35,45 @@
       <p>Loading LEGO Island</p>
     </div>
 
+    <!-- ── Story nav button ────────────────────────────────────────────── -->
+    <a id="story-btn" href="story.html" aria-label="Open data story">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Data Story
+    </a>
+    <style>
+      #story-btn {
+        position: fixed;
+        top: 16px; right: 16px;
+        z-index: 200;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        border-radius: 100px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.22);
+        color: rgba(255,255,255,0.88);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-family: var(--font-body, system-ui);
+        transition: background 160ms, color 160ms, border-color 160ms, transform 160ms;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      }
+      #story-btn:hover {
+        background: rgba(255,255,255,0.22);
+        color: #fff;
+        border-color: rgba(255,255,255,0.45);
+        transform: translateY(-1px);
+      }
+    </style>
+
     <!-- ── Page title ────────────────────────────────────────────────────── -->
+
     <div id="page-title" aria-hidden="true">
       <h1>
         <span class="lego-brick" style="--brick-bg: #e3000b">L</span
