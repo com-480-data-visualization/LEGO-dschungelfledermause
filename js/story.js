@@ -123,6 +123,7 @@ async function main() {
   buildRose(normal);
   buildTreemap(normal);
   buildChord(normal);
+  buildSunburst(normal);
   initFade();
 }
 
@@ -507,6 +508,204 @@ function initFade() {
     if(e.isIntersecting){ e.target.classList.add('vis'); io.unobserve(e.target); }
   }), {threshold:.1});
   document.querySelectorAll('.fi').forEach(el=>io.observe(el));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   5. SUNBURST — zoomable themeGroup → theme
+══════════════════════════════════════════════════════════════════════ */
+function buildSunburst(rows) {
+  const wrap = document.getElementById('sunburst-svg').parentElement;
+  const SIZE = Math.min(640, wrap.clientWidth - 20);
+  const radius = SIZE / 2;
+
+  // Hierarchy: root → themeGroup → theme
+  const byGroup = d3.rollup(
+    rows,
+    v => d3.rollup(v, vv => vv.length, r => r.theme),
+    r => r.themeGroup
+  );
+  const rootData = {
+    name: 'All LEGO',
+    children: Array.from(byGroup, ([g, themes]) => ({
+      name: g,
+      children: Array.from(themes, ([t, n]) => ({ name: t, group: g, value: n })).filter(d => d.value >= 2)
+    })).filter(d => d.name)
+  };
+
+  const root = d3.hierarchy(rootData).sum(d => d.value || 0).sort((a,b) => b.value - a.value);
+  d3.partition().size([2 * Math.PI, root.height + 1])(root);
+  root.each(d => d.current = d);
+
+  const arcGen = d3.arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.004))
+    .padRadius(radius)
+    .innerRadius(d => Math.max(0, d.y0) * radius / (root.height + 1))
+    .outerRadius(d => Math.max(0, d.y1 - 0.5) * radius / (root.height + 1));
+
+  const svg = d3.select('#sunburst-svg')
+    .attr('width', SIZE).attr('height', SIZE)
+    .attr('viewBox', `${-SIZE/2} ${-SIZE/2} ${SIZE} ${SIZE}`);
+
+  // Segment fill colour
+  const segColor = d => {
+    if (d.depth === 0) return 'transparent';
+    const grp = d.depth === 1 ? d.data.name : (d.data.group || '');
+    const base = d3.color(gColor(grp)) || d3.color('#888');
+    return d.depth === 1 ? base.toString() : base.brighter(0.6).toString();
+  };
+
+  function arcVisible(d) { return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0; }
+  function labelVisible(d, geom = d.current) { 
+    if (geom.y1 > 3 || geom.y0 < 1) return false;
+    const y = (geom.y0 + geom.y1 - 0.5) / 2 * radius / (root.height + 1);
+    const arcLength = (geom.x1 - geom.x0) * y;
+    // Hide if arc is too small. Char width is ~5.5px.
+    return arcLength > d.data.name.length * 5.5 + 10; 
+  }
+  function getTextPath(d) {
+    const midAngle = (d.x0 + d.x1) / 2;
+    const bottom = midAngle > Math.PI / 2 && midAngle < 3 * Math.PI / 2;
+    
+    // The drawn arc goes from d.y0 to d.y1 - 0.5. The middle is halfway between.
+    let y = (d.y0 + d.y1 - 0.5) / 2 * radius / (root.height + 1);
+    y = bottom ? y + 3.5 : y - 3.5;
+    
+    const startAngle = d.x0 - Math.PI / 2;
+    const endAngle = d.x1 - Math.PI / 2;
+    
+    if (d.x1 - d.x0 >= 2 * Math.PI - 0.001) {
+      const mx = y * Math.cos(startAngle + Math.PI);
+      const my = y * Math.sin(startAngle + Math.PI);
+      const sx = y * Math.cos(startAngle);
+      const sy = y * Math.sin(startAngle);
+      return `M ${sx} ${sy} A ${y} ${y} 0 1 1 ${mx} ${my} A ${y} ${y} 0 1 1 ${sx} ${sy}`;
+    }
+    
+    const sx = y * Math.cos(startAngle);
+    const sy = y * Math.sin(startAngle);
+    const ex = y * Math.cos(endAngle);
+    const ey = y * Math.sin(endAngle);
+    const largeArc = (d.x1 - d.x0) > Math.PI ? 1 : 0;
+    
+    if (bottom) {
+      return `M ${ex} ${ey} A ${y} ${y} 0 ${largeArc} 0 ${sx} ${sy}`;
+    } else {
+      return `M ${sx} ${sy} A ${y} ${y} 0 ${largeArc} 1 ${ex} ${ey}`;
+    }
+  }
+
+  // Draw paths
+  const path = svg.append('g')
+    .selectAll('path')
+    .data(root.descendants().slice(1))
+    .join('path')
+    .attr('fill', segColor)
+    .attr('fill-opacity', d => arcVisible(d.current) ? (d.children ? 0.88 : 0.72) : 0)
+    .attr('pointer-events', d => arcVisible(d.current) ? 'auto' : 'none')
+    .attr('d', d => arcGen(d.current))
+    .attr('stroke', '#fff').attr('stroke-width', 0.5)
+    .style('cursor', 'pointer');
+
+  const textPaths = svg.append('defs')
+    .selectAll('path')
+    .data(root.descendants().slice(1))
+    .join('path')
+    .attr('id', (d, i) => `sb-path-${i}`)
+    .attr('d', d => getTextPath(d.current));
+
+  // Draw labels
+  const labelText = svg.append('g')
+    .attr('pointer-events', 'none')
+    .selectAll('text')
+    .data(root.descendants().slice(1))
+    .join('text')
+    .attr('fill-opacity', d => +labelVisible(d))
+    .style('font-size', d => Math.round(d.current.y0) === 1 ? '10px' : '8.5px')
+    .style('font-weight', '700')
+    .style('fill', '#fff')
+    .style('font-family', 'Inter,system-ui');
+
+  labelText.append('textPath')
+    .attr('href', (d, i) => `#sb-path-${i}`)
+    .attr('startOffset', '50%')
+    .style('text-anchor', 'middle')
+    .text(d => d.data.name);
+
+  // Centre circle (click to zoom out)
+  const centre = svg.append('circle')
+    .datum(root)
+    .attr('r', radius / (root.height + 1))
+    .attr('fill', 'rgba(240,240,235,0.9)')
+    .attr('stroke', '#ddd').attr('stroke-width', 1)
+    .style('cursor', 'pointer');
+
+  const centreLabel = svg.append('text')
+    .attr('text-anchor', 'middle').attr('dy', '-0.3em')
+    .style('font-family', 'Nunito,sans-serif').style('font-size', '13px').style('font-weight', '800').style('fill', '#333')
+    .style('pointer-events', 'none').text('All');
+  svg.append('text')
+    .attr('text-anchor', 'middle').attr('dy', '1em')
+    .style('font-family', 'Inter,system-ui').style('font-size', '9px').style('font-weight', '600').style('fill', '#999')
+    .style('pointer-events', 'none').text('click to zoom out');
+
+  const crumb = document.getElementById('sb-breadcrumb');
+
+  function clicked(event, p) {
+    // Outer ring (theme leaf): open sets modal
+    if (!p.children) {
+      const themeSets = rows.filter(r => r.theme === p.data.name);
+      if (themeSets.length) openSetsModal(p.data.name, gColor(p.data.group || ''), themeSets);
+      return;
+    }
+
+    // Inner ring (group) or centre: zoom
+    const zoomTarget = p.parent || root;
+    centre.datum(zoomTarget);
+    centreLabel.text(p === root ? 'All' : p.data.name);
+    crumb.textContent = p === root ? 'All LEGO' : `All LEGO › ${p.data.name}`;
+
+    root.each(d => d.target = {
+      depth: d.depth,
+      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      y0: Math.max(0, d.y0 - p.depth),
+      y1: Math.max(0, d.y1 - p.depth),
+    });
+
+    const t = svg.transition().duration(700).ease(d3.easeCubicInOut);
+
+    path.transition(t)
+      .tween('data', d => { const i = d3.interpolate(d.current, d.target); return tt => d.current = i(tt); })
+      .filter(function(d) { return +this.getAttribute('fill-opacity') || arcVisible(d.target); })
+      .attr('fill-opacity', d => arcVisible(d.target) ? (d.children ? 0.88 : 0.72) : 0)
+      .attr('pointer-events', d => arcVisible(d.target) ? 'auto' : 'none')
+      .attrTween('d', d => () => arcGen(d.current));
+
+    labelText.filter(function(d) { return +this.getAttribute('fill-opacity') || labelVisible(d, d.target); })
+      .transition(t)
+      .attr('fill-opacity', d => +labelVisible(d, d.target))
+      .style('font-size', d => Math.round(d.target.y0) === 1 ? '10px' : '8.5px');
+
+    textPaths.transition(t)
+      .attrTween('d', d => () => getTextPath(d.current));
+  }
+
+  path.on('mouseover', (evt, d) => {
+    const hint = d.children ? 'Click to zoom in' : 'Click to see sets';
+    showTip(`<strong>${d.data.name}</strong><br>${d.depth===1 ? 'Theme group' : d.data.group} &middot; ${d.value} sets<br><span style="color:#aaa;font-size:11px">${hint}</span>`, evt);
+  }).on('mousemove', moveTip).on('mouseleave', hideTip).on('click', clicked);
+
+  centre.on('mouseover', (evt, d) => {
+    showTip(d === root ? 'All LEGO' : `Back to ${d.data.name}`, evt);
+  }).on('mousemove', moveTip).on('mouseleave', hideTip).on('click', clicked);
+
+  // Legend for top-level groups
+  const topGroups = root.children || [];
+  document.getElementById('sunburst-legend').innerHTML = topGroups
+    .map(d => `<span class="leg-item"><span class="leg-swatch" style="background:${gColor(d.data.name)}"></span>${d.data.name}</span>`)
+    .join('');
 }
 
 main();

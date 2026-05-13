@@ -242,7 +242,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;ali
     <a href="#ch2">Rose</a>
     <a href="#ch3">Treemap</a>
     <a href="#ch4">Chord</a>
-    <a href="#takeaways">Insights</a>
+    <a href="#ch5">Sunburst</a>
   </div>
   <span class="nav-badge">Data Story</span>
   <a class="nav-back" href="index.html">← Island</a>
@@ -345,21 +345,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;ali
   </div>
 </section>
 
-<!-- TAKEAWAYS -->
-<section id="takeaways">
-  <div class="ti">
-    <div class="ch-kicker" style="color:rgba(255,255,255,.3)">Insights</div>
-    <h2>What the data <em>reveals</em></h2>
-    <p class="ch-desc">Four charts, four surprises about the world's most famous toy.</p>
-    <div class="tw-grid">
-      <div class="tw-card"><div class="tw-icon">🔥</div><strong>The licensed explosion</strong><p>Licensed releases tripled in the 2000s — the heatmap shows the decade lit up like never before.</p></div>
-      <div class="tw-card"><div class="tw-icon">🌹</div><strong>Modern Day dominates</strong><p>City, Police, and everyday themes rival Licensed in raw volume — LEGO's original identity is alive.</p></div>
-      <div class="tw-card"><div class="tw-icon">🗺️</div><strong>Star Wars reigns</strong><p>The treemap makes it clear: Star Wars alone is larger than entire theme groups from the 1990s.</p></div>
-      <div class="tw-card"><div class="tw-icon">🎵</div><strong>Technic = complexity king</strong><p>The chord diagram shows Technical/Model Making themes dominate the 500+ piece tier, not Licensed sets.</p></div>
+<!-- CH5: SUNBURST -->
+<section class="chapter fi" id="ch5">
+  <div class="ch-inner">
+    <div class="ch-kicker">Chapter 5 · Sunburst Diagram</div>
+    <div class="ch-header"><span class="ch-num">5</span><h2>The whole LEGO universe, <em>at a glance</em></h2></div>
+    <p class="ch-desc">
+      Two rings: the inner ring = theme groups, the outer ring = individual themes within each group.
+      Arc width = set count. <strong>Click any inner arc</strong> to zoom into that group and
+      explore its themes — then click the <strong>centre</strong> to zoom back out.
+      Click an <strong>outer arc</strong> (individual theme) to see all its sets.
+    </p>
+    <div class="chart-card" style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <div id="sb-breadcrumb" style="font-size:12px;font-weight:600;color:var(--muted);align-self:flex-start">All LEGO</div>
+      <svg id="sunburst-svg" style="display:block"></svg>
+      <div id="sunburst-legend" class="legend" style="justify-content:center"></div>
     </div>
-    <p class="credit">Data: Brickset.com · COM-480 Data Visualisation · LEGO Island</p>
   </div>
 </section>
+
+<!-- CREDIT FOOTER -->
+<footer style="background:var(--dark);padding:24px var(--px);text-align:center">
+  <p style="font-size:11px;color:rgba(255,255,255,.2)">Data: Brickset.com · COM-480 Data Visualisation · LEGO Island</p>
+</footer>
 
 <!-- Sets modal -->
 <div id="sets-modal-backdrop"></div>
