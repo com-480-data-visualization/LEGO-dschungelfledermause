@@ -13,7 +13,9 @@ const SVG_H = 720;    // island SVG viewBox height
 let activeDistrictId = null;
 
 function initIsland() {
-  const container = document.getElementById('layer-districts');
+  // Use #districts-wrapper (same size/position as the island SVG wrapper)
+  // so that left/top % values match the SVG viewBox coordinate space.
+  const container = document.getElementById('districts-wrapper');
   if (!container) return;
 
   for (const [id, district] of Object.entries(DISTRICTS)) {
@@ -208,7 +210,7 @@ function updateMarkerSizes(startYear, endYear) {
   }
 
   const maxCount = Math.max(...Object.values(counts), 1);
-  const container = document.getElementById('layer-districts');
+  const container = document.getElementById('districts-wrapper');
   if (!container) return;
 
   for (const [id, count] of Object.entries(counts)) {

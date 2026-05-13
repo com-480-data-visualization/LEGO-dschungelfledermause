@@ -41,6 +41,13 @@
   z-index: var(--z-districts);
 }
 
+/* Give the districts wrapper an explicit height matching the SVG aspect ratio.
+   Without this, the empty div has height:0 and top-% marker positions
+   would all collapse to 0. The ratio matches viewBox="0 0 1100 720". */
+#districts-wrapper {
+  aspect-ratio: 1100 / 720;
+}
+
 /* ── Island SVG wrapper: centered, fills the scene ──────────────────────── */
 .island-svg-wrapper {
   position: absolute;
