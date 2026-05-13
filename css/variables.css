@@ -19,10 +19,10 @@
   --accent-space:    #a8dadc;
   --accent-ip:       #c77dff;
 
-  /* Ocean and island palette */
-  --ocean-dark:   #1a5f9c;
-  --ocean-mid:    #2a7fc1;
-  --ocean-light:  #3a8fd1;
+  /* Ocean and island palette — matched to _lego_island.png water color */
+  --ocean-dark:   #0e4672;
+  --ocean-mid:    #0d5ebd;
+  --ocean-light:  #2596be;
   --sand:         #d4a855;
   --sand-dark:    #c9a04a;
   --grass-light:  #5db85d;
